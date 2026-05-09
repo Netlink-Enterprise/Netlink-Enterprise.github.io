@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>MKC Unlock System</title>
+    <title>MKC Secure System</title>
 
     <style>
         body {
             margin: 0;
             font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top, #1a1a1a, #000);
+            background: radial-gradient(circle at top, #111, #000);
             color: white;
             text-align: center;
-            overflow: hidden;
         }
 
         .page {
@@ -25,15 +24,13 @@
             display: flex;
         }
 
-        /* LOGO */
-        .logo {
+        img {
             width: 160px;
             border-radius: 20px;
-            box-shadow: 0 0 20px #00ffcc;
-            margin-bottom: 20px;
+            box-shadow: 0 0 20px cyan;
+            margin-bottom: 15px;
         }
 
-        /* BUTTONS */
         button {
             padding: 12px 25px;
             margin-top: 15px;
@@ -57,32 +54,30 @@
             font-size: 16px;
             border-radius: 8px;
             border: none;
-            margin-top: 10px;
             text-align: center;
         }
 
-        /* LOADING BAR */
-        .bar {
-            width: 60%;
-            height: 20px;
-            background: #222;
-            border-radius: 20px;
-            overflow: hidden;
-            margin-top: 20px;
+        #message {
+            color: red;
+            margin-top: 10px;
         }
 
-        .fill {
-            height: 100%;
-            width: 0%;
-            background: linear-gradient(90deg, #00ffcc, #0077ff);
-            animation: load 3s forwards;
+        .card {
+            background: #1a1a1a;
+            padding: 20px;
+            border-radius: 15px;
+            margin: 10px;
+            width: 250px;
+            box-shadow: 0 0 10px #00ffcc;
         }
 
-        @keyframes load {
-            to { width: 100%; }
+        .row {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
         }
 
-        /* SHAKING LOCK */
         .shake {
             animation: shake 0.3s;
         }
@@ -94,32 +89,19 @@
             75% { transform: translateX(-10px); }
             100% { transform: translateX(0); }
         }
-
-        #message {
-            color: #ff5555;
-            margin-top: 10px;
-        }
     </style>
 </head>
 
 <body>
 
-<!-- ================= LOADING SCREEN ================= -->
-<div id="loading" class="page active">
-    <h1>Initializing System...</h1>
-    <div class="bar">
-        <div class="fill"></div>
-    </div>
-</div>
-
 <!-- ================= HOME ================= -->
-<div id="home" class="page">
+<div id="home" class="page active">
 
-    <!-- 🔥 YOUR IMAGE (NO RENAMING REQUIRED) -->
-    <img class="logo" src="YOUR-IMAGE-FILE.png">
+    <!-- YOUR IMAGE (KEEP YOUR FILE NAME) -->
+    <img src="YOUR-IMAGE-FILE.png">
 
-    <h1>MKC SYSTEM</h1>
-    <p>Secure Access Required</p>
+    <h1>MKC SECURE SYSTEM</h1>
+    <p>Restricted Access Required</p>
 
     <button class="green" onclick="goLogin()">START ACCESS</button>
 </div>
@@ -127,61 +109,72 @@
 <!-- ================= LOGIN ================= -->
 <div id="login" class="page">
 
-    <div id="lockBox">
-        <h2>🔒 Enter Access Code</h2>
+    <div id="box">
+        <h2>🔒 ENTER ACCESS CODE</h2>
 
-        <input type="password" id="password" placeholder="000000">
+        <input type="password" id="password" placeholder="Access Code">
 
         <br>
 
-        <button class="blue" onclick="checkPassword()">
-            UNLOCK
-        </button>
+        <button class="blue" onclick="checkPassword()">UNLOCK</button>
 
         <p id="message"></p>
 
-        <button class="red" onclick="goHome()">EXIT</button>
+        <button class="red" onclick="goHome()">BACK</button>
     </div>
 </div>
 
-<!-- ================= SECRET ================= -->
-<div id="secret" class="page">
-    <h1>ACCESS GRANTED ✅</h1>
-    <p>Welcome, Operator.</p>
+<!-- ================= EMPLOYEE PAGE ================= -->
+<div id="employee" class="page">
 
-    <button class="green" onclick="goHome()">RETURN</button>
+    <h1>👥 COMPANY ACCESS GRANTED</h1>
+    <p>Welcome to the internal system</p>
+
+    <div class="row">
+
+        <div class="card">
+            <h3>Founder</h3>
+            <p>System Owner</p>
+        </div>
+
+        <div class="card">
+            <h3>Co-Founder</h3>
+            <p>Tech Lead</p>
+        </div>
+
+        <div class="card">
+            <h3>Employees</h3>
+            <p>Engineering Team</p>
+        </div>
+
+    </div>
+
+    <button class="green" onclick="goHome()">LOG OUT</button>
 </div>
 
 <script>
-    // fake loading delay
-    setTimeout(() => {
-        document.getElementById("loading").classList.remove("active");
-        document.getElementById("home").classList.add("active");
-    }, 3000);
-
     function show(page) {
         document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
         document.getElementById(page).classList.add("active");
-    }
-
-    function goLogin() {
-        show("login");
     }
 
     function goHome() {
         show("home");
     }
 
+    function goLogin() {
+        show("login");
+    }
+
     function checkPassword() {
         const pass = document.getElementById("password").value;
-        const box = document.getElementById("lockBox");
+        const box = document.getElementById("box");
 
-        if (pass === "000000") {
-            show("secret");
+        if (pass === "201400") {
+            show("employee");
         } else {
             document.getElementById("message").innerText = "ACCESS DENIED";
 
-            // shake effect like game lock
             box.classList.add("shake");
             setTimeout(() => box.classList.remove("shake"), 300);
         }
