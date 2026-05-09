@@ -2,204 +2,326 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Netlink Enterprise | Secure Terminal</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netlink-Enterprise | Elite Portal</title>
     <style>
         :root {
-            --bg: #050505;
-            --panel: #111;
-            --accent: #007bff;
-            --text: #eee;
-            --gold: #d4af37;
+            --primary: #00ffcc; 
+            --founder-glow: #00d9ff; 
+            --cofounder-glow: #ff00ff; 
+            --bg-dark: #050505;
+            --card-bg: #111111;
         }
 
         body {
+            background-color: var(--bg-dark);
+            color: white;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             margin: 0;
-            font-family: 'Courier New', Courier, monospace; /* Matrix/Terminal feel */
-            background: var(--bg);
-            color: var(--text);
             display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .logo-header {
+            font-size: 2.2rem;
+            font-weight: 900;
+            letter-spacing: 10px;
+            text-transform: uppercase;
+            margin-bottom: 60px;
+            color: white;
+            text-shadow: 0 0 20px var(--primary);
+        }
+
+        .dashboard-container {
+            display: flex;
+            gap: 30px;
+            padding: 20px;
+            flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
 
-        .page {
-            display: none;
-            width: 90%;
-            max-width: 500px;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        .panel {
-            background: var(--panel);
+        /* --- BASE CARD STYLE --- */
+        .profile-card {
+            background: var(--card-bg);
+            border: 2px solid #222;
             padding: 30px;
-            border-radius: 10px;
-            border: 1px solid #333;
+            width: 220px;
             text-align: center;
-            box-shadow: 0 0 20px rgba(0, 123, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        input, textarea {
-            width: 100%;
+        /* --- ELITE TIER (FOUNDER & CO-FOUNDER) --- */
+        .elite-card {
+            width: 290px;
+            position: relative;
+            background: linear-gradient(145deg, #0f0f0f, #1a1a1a);
+        }
+
+        .founder-card { 
+            border: 3px solid var(--founder-glow); 
+            box-shadow: 0 0 25px rgba(0, 217, 255, 0.2);
+        }
+        
+        .cofounder-card { 
+            border: 3px solid var(--cofounder-glow); 
+            box-shadow: 0 0 25px rgba(255, 0, 255, 0.2);
+        }
+
+        .elite-card::before {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 10px;
+            font-weight: 900;
+            padding: 2px 18px;
+            color: black;
+            clip-path: polygon(10% 0, 90% 0, 100% 100%, 0% 100%);
+            white-space: nowrap;
+        }
+
+        .founder-card::before { background: var(--founder-glow); content: "MASTER FOUNDER"; }
+        .cofounder-card::before { background: var(--cofounder-glow); content: "CORE CO-FOUNDER"; }
+
+        .elite-card:hover {
+            transform: scale(1.08) rotate(1deg);
+            box-shadow: 0 0 60px currentColor;
+        }
+
+        /* --- STANDARD TIER (DIRECTOR & HUB) --- */
+        .profile-card:not(.elite-card):hover {
+            border-color: var(--primary);
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(0, 255, 204, 0.1);
+        }
+
+        .badge {
+            text-transform: uppercase;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+            color: #666;
+        }
+
+        .btn {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
             padding: 12px;
-            margin: 10px 0;
-            background: #000;
-            border: 1px solid #444;
-            border-radius: 4px;
-            color: #00ff00; /* Hacker green text */
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        button {
-            width: 100%;
-            padding: 14px;
-            margin: 8px 0;
-            border: none;
-            border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            background: #222;
+            width: 100%;
+            margin-top: 15px;
+            text-transform: uppercase;
+            transition: 0.3s;
+            letter-spacing: 1px;
+        }
+
+        .btn:hover { background: var(--primary); color: black; }
+
+        /* Specific Elite Buttons */
+        .founder-btn { border-color: var(--founder-glow); color: var(--founder-glow); }
+        .founder-btn:hover { background: var(--founder-glow) !important; color: black !important; }
+
+        .cofounder-btn { border-color: var(--cofounder-glow); color: var(--cofounder-glow); }
+        .cofounder-btn:hover { background: var(--cofounder-glow) !important; color: black !important; }
+
+        /* --- EMPLOYEE HUB PANEL --- */
+        .control-panel {
+            background: #080808;
+            border: 2px solid #333;
+            padding: 40px;
+            width: 450px;
+            margin-top: 50px;
+            display: none;
+            text-align: center;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+        }
+
+        .profit-btn {
+            background: #28a745;
+            border: none;
             color: white;
+            padding: 14px;
+            margin: 5px;
+            cursor: pointer;
+            width: 120px;
+            font-weight: bold;
             transition: 0.2s;
         }
 
-        button:hover { background: #333; border: 1px solid var(--accent); }
-        .primary-btn { background: var(--accent); }
-        
-        #btn-founder { border: 1px solid var(--gold); color: var(--gold); }
+        .profit-btn:hover { transform: scale(1.1); background: #218838; }
 
-        .content-box {
-            text-align: left;
+        /* --- MESSAGE MODAL --- */
+        .message-box {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
             background: #000;
-            padding: 15px;
-            border-radius: 4px;
-            margin-top: 10px;
-            border-left: 2px solid var(--accent);
-            font-size: 0.9em;
+            border: 4px solid var(--primary);
+            padding: 35px;
+            z-index: 100;
+            width: 400px;
+            box-shadow: 0 0 100px rgba(0,0,0,1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 120px;
+            background: #111;
+            color: white;
+            padding: 12px;
+            border: 1px solid #333;
+            margin-top: 15px;
+            resize: none;
+            font-family: inherit;
         }
     </style>
 </head>
 <body>
 
-<!-- GATE 1: SYSTEM ENTRY -->
-<div id="gate" class="page" style="display:flex;">
-    <div class="panel">
-        <h1 style="color: var(--accent);">SYSTEM LOCKED</h1>
-        <p>Enter Master Entry Code</p>
-        <input type="password" id="entryCode" placeholder="MASTER CODE" onkeypress="if(event.key==='Enter') verifyEntry()">
-        <button class="primary-btn" onclick="verifyEntry()">UNLOCK SYSTEM</button>
-    </div>
-</div>
+    <div class="logo-header">Netlink-Enterprise</div>
 
-<!-- GATE 2: ROLE LOGIN -->
-<div id="login" class="page">
-    <div class="panel">
-        <h1>NETLINK IDENTITY</h1>
-        <p>Verify Personnel Code</p>
-        <input type="password" id="roleCode" placeholder="PERSONNEL CODE" onkeypress="if(event.key==='Enter') login()">
-        <button class="primary-btn" onclick="login()">VERIFY ID</button>
-    </div>
-</div>
+    <div class="dashboard-container">
+        <!-- FOUNDER -->
+        <div class="profile-card elite-card founder-card">
+            <span class="badge" style="color:var(--founder-glow)">System Master</span>
+            <h2 style="color: var(--founder-glow); margin: 5px 0; font-size: 1.8rem;">Manav Bisht</h2>
+            <p style="font-size: 0.8rem; color: #888;">Chief Executive & Architect</p>
+            <button class="btn founder-btn" onclick="openMsg('Founder')">Priority Transmit</button>
+        </div>
 
-<!-- DASHBOARD -->
-<div id="dashboard" class="page">
-    <div class="panel">
-        <h2>COMMAND CENTER</h2>
-        <p id="accessLevel" style="color: #888;"></p>
+        <!-- CO-FOUNDER -->
+        <div class="profile-card elite-card cofounder-card">
+            <span class="badge" style="color:var(--cofounder-glow)">Operation Master</span>
+            <h2 style="color: var(--cofounder-glow); margin: 5px 0; font-size: 1.8rem;">Executive Partner</h2>
+            <p style="font-size: 0.8rem; color: #888;">Core Strategic Oversight</p>
+            <button class="btn cofounder-btn" onclick="openMsg('Co-Founder')">Elite Channel</button>
+        </div>
+
+        <!-- DIRECTOR -->
+        <div class="profile-card">
+            <span class="badge">Oversight</span>
+            <h3>Director</h3>
+            <p style="font-size: 0.75rem; color: #555;">Strategy Manager</p>
+            <button class="btn" onclick="openMsg('Director')">Messages</button>
+        </div>
+
+        <!-- STAFF HUB -->
+        <div class="profile-card">
+            <span class="badge">Utility</span>
+            <h3>Staff Hub</h3>
+            <p style="font-size: 0.75rem; color: #555;">Personnel Files</p>
+            <button class="btn" onclick="showEmployeeMenu()">Access Data</button>
+        </div>
+    </div>
+
+    <!-- EMPLOYEE MANAGEMENT PANEL -->
+    <div id="employee-menu" class="control-panel">
+        <span class="badge" style="color: var(--primary);">Authorized Personnel Only</span>
+        <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 20px;">
+            <button class="btn" onclick="selectEmployee('Agastya')">Agastya</button>
+            <button class="btn" onclick="selectEmployee('Other')">Other</button>
+        </div>
         
-        <button id="btn-founder" onclick="openPage('founder')">FOUNDER PANEL</button>
-        <button id="btn-cofounder" onclick="openPage('cofounder')">CO-FOUNDER VIEW</button>
-        <button id="btn-director" onclick="openPage('director')">DIRECTOR INTEL</button>
-        <button id="btn-employee" onclick="openPage('employee')">EMPLOYEE TASKS</button>
-        
-        <button onclick="location.reload()" style="color: #ff4d4d; background: transparent; border: 1px solid #444;">DISCONNECT</button>
+        <div id="profit-section" style="display:none; border-top: 1px solid #222; padding-top: 20px;">
+            <p style="font-size: 0.9rem; color: #aaa;">Current Ledger: <span id="active-name" style="color:var(--primary); font-weight: bold;"></span></p>
+            <div id="money" style="font-size: 4rem; color: #28a745; margin: 20px 0; font-family: monospace;">$0</div>
+            <button class="profit-btn" onclick="addMoney(100)">+ $100</button>
+            <button class="profit-btn" onclick="addMoney(500)">+ $500</button>
+            <button class="btn" style="width: auto; padding: 5px 15px; font-size: 10px; border-color: #444; color: #444;" onclick="resetMoney()">Reset Ledger</button>
+        </div>
     </div>
-</div>
 
-<!-- PAGES -->
-<div id="founder" class="page">
-    <div class="panel">
-        <h2>FOUNDER CONTROL</h2>
-        <textarea id="annInput" placeholder="Global Announcement..."></textarea>
-        <button class="primary-btn" onclick="postData('ann')">BROADCAST</button>
-        <textarea id="assInput" placeholder="Employee Task..."></textarea>
-        <button class="primary-btn" onclick="postData('ass')">ASSIGN TASK</button>
-        <button onclick="openPage('dashboard')">RETURN</button>
+    <!-- MESSAGING MODAL -->
+    <div id="message-box" class="message-box">
+        <span id="msg-badge" class="badge" style="color: var(--primary);">Secure Link established</span>
+        <h3>Target: <span id="msg-to"></span></h3>
+        <textarea id="text-input" placeholder="Type encrypted data..."></textarea>
+        <button id="send-btn" class="btn" onclick="sendMsg()">Initiate Transmission</button>
+        <button class="btn" style="border-color:#ff4444; color:#ff4444;" onclick="closeMsg()">Terminate</button>
     </div>
-</div>
 
-<div id="employee" class="page">
-    <div class="panel">
-        <h2>ASSIGNMENTS</h2>
-        <div id="assDisplay" class="content-box">No tasks found.</div>
-        <button onclick="openPage('dashboard')">RETURN</button>
-    </div>
-</div>
+    <script>
+        let balance = 0;
 
-<div id="cofounder" class="page"><div class="panel"><h2>CO-FOUNDER</h2><div id="cofAnn" class="content-box"></div><button onclick="openPage('dashboard')">RETURN</button></div></div>
-<div id="director" class="page"><div class="panel"><h2>DIRECTOR</h2><div id="dirAnn" class="content-box"></div><button onclick="openPage('dashboard')">RETURN</button></div></div>
-
-<script>
-    // 1. MASTER ENTRY VERIFICATION
-    function verifyEntry() {
-        const code = document.getElementById("entryCode").value;
-        if (code === "201400") {
-            openPage('login');
-        } else {
-            alert("ACCESS DENIED: INCORRECT MASTER CODE");
+        // --- EMPLOYEE FUNCTIONS ---
+        function showEmployeeMenu() {
+            document.getElementById('employee-menu').style.display = 'block';
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
         }
-    }
-
-    // 2. ROLE LOGIN
-    function login() {
-        const code = document.getElementById("roleCode").value;
-        const btns = ["btn-founder", "btn-cofounder", "btn-director", "btn-employee"];
         
-        // Hide all first
-        btns.forEach(id => document.getElementById(id).style.display = "none");
-
-        if (code === "314314") {
-            // FOUNDER: SHOW EVERYTHING
-            btns.forEach(id => document.getElementById(id).style.display = "block");
-            document.getElementById("accessLevel").innerText = "LEVEL: FOUNDER";
-        } else if (code === "444444") {
-            document.getElementById("btn-cofounder").style.display = "block";
-            document.getElementById("btn-employee").style.display = "block";
-            document.getElementById("accessLevel").innerText = "LEVEL: CO-FOUNDER";
-        } else if (code === "555555") {
-            document.getElementById("btn-director").style.display = "block";
-            document.getElementById("btn-employee").style.display = "block";
-            document.getElementById("accessLevel").innerText = "LEVEL: DIRECTOR";
-        } else {
-            alert("IDENTITY NOT RECOGNIZED");
-            return;
+        function selectEmployee(name) {
+            document.getElementById('profit-section').style.display = 'block';
+            document.getElementById('active-name').innerText = name;
+            balance = 0;
+            updateBalance();
         }
-        openPage('dashboard');
-    }
 
-    function openPage(id) {
-        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-        document.getElementById(id).style.display = 'flex';
-        
-        // Load data when entering pages
-        if(id === 'employee') document.getElementById("assDisplay").innerHTML = localStorage.getItem("net_ass") || "Clear.";
-        if(id === 'cofounder') document.getElementById("cofAnn").innerHTML = localStorage.getItem("net_ann") || "No data.";
-        if(id === 'director') document.getElementById("dirAnn").innerHTML = localStorage.getItem("net_ann") || "No data.";
-    }
-
-    function postData(type) {
-        if(type === 'ann') {
-            localStorage.setItem("net_ann", document.getElementById("annInput").value);
-            document.getElementById("annInput").value = "";
-        } else {
-            localStorage.setItem("net_ass", document.getElementById("assInput").value);
-            document.getElementById("assInput").value = "";
+        function addMoney(amt) {
+            balance += amt;
+            updateBalance();
         }
-        alert("TRANSMISSION SUCCESSFUL");
-    }
-</script>
 
+        function resetMoney() {
+            balance = 0;
+            updateBalance();
+        }
+
+        function updateBalance() {
+            document.getElementById('money').innerText = "$" + balance.toLocaleString();
+        }
+
+        // --- MESSAGING FUNCTIONS ---
+        function openMsg(role) {
+            const box = document.getElementById('message-box');
+            const badge = document.getElementById('msg-badge');
+            const btn = document.getElementById('send-btn');
+            
+            document.getElementById('msg-to').innerText = role;
+            box.style.display = 'block';
+            
+            // Apply unique Elite colors to the Modal
+            if(role === 'Founder') {
+                box.style.borderColor = '#00d9ff';
+                badge.style.color = '#00d9ff';
+                btn.style.borderColor = '#00d9ff';
+                btn.style.color = '#00d9ff';
+            } else if(role === 'Co-Founder') {
+                box.style.borderColor = '#ff00ff';
+                badge.style.color = '#ff00ff';
+                btn.style.borderColor = '#ff00ff';
+                btn.style.color = '#ff00ff';
+            } else {
+                box.style.borderColor = '#00ffcc';
+                badge.style.color = '#00ffcc';
+                btn.style.borderColor = '#00ffcc';
+                btn.style.color = '#00ffcc';
+            }
+        }
+
+        function closeMsg() {
+            document.getElementById('message-box').style.display = 'none';
+            document.getElementById('text-input').value = '';
+        }
+
+        function sendMsg() {
+            const text = document.getElementById('text-input').value;
+            if(text.trim()) {
+                alert("Transmission Successful to " + document.getElementById('msg-to').innerText);
+                closeMsg();
+            } else {
+                alert("ERROR: No data detected for transmission.");
+            }
+        }
+    </script>
 </body>
 </html>
