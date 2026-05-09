@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Netlink-Enterprise System</title>
+    <title>Netlink-Enterprise</title>
 
     <style>
         body {
@@ -20,168 +20,161 @@
             flex-direction: column;
         }
 
-        .active {
-            display: flex;
-        }
-
-        img {
-            width: 160px;
-            border-radius: 20px;
-            box-shadow: 0 0 20px cyan;
-            margin-bottom: 15px;
-        }
-
-        h1 {
-            letter-spacing: 2px;
+        input {
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            border: none;
         }
 
         button {
-            padding: 12px 25px;
-            margin-top: 15px;
-            font-size: 16px;
+            padding: 10px 20px;
+            margin: 10px;
             border: none;
-            border-radius: 10px;
+            border-radius: 5px;
             cursor: pointer;
-            transition: 0.2s;
+            background: #222;
+            color: white;
         }
-
-        .green { background: #00ff88; }
-        .blue { background: #2196F3; color: white; }
-        .red { background: #ff3b3b; color: white; }
 
         button:hover {
-            transform: scale(1.05);
+            background: #444;
         }
 
-        input {
-            padding: 12px;
-            font-size: 16px;
-            border-radius: 8px;
-            border: none;
-            text-align: center;
-        }
-
-        #message {
-            color: red;
-            margin-top: 10px;
-        }
-
-        .card {
-            background: #1a1a1a;
+        .panel {
+            width: 80%;
+            max-width: 600px;
+            background: #111;
             padding: 20px;
-            border-radius: 15px;
-            margin: 10px;
-            width: 250px;
-            box-shadow: 0 0 10px #00ffcc;
+            border-radius: 10px;
         }
 
-        .row {
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .shake {
-            animation: shake 0.3s;
-        }
-
-        @keyframes shake {
-            0% { transform: translateX(0); }
-            25% { transform: translateX(-10px); }
-            50% { transform: translateX(10px); }
-            75% { transform: translateX(-10px); }
-            100% { transform: translateX(0); }
+        textarea {
+            width: 100%;
+            height: 120px;
+            margin-top: 10px;
         }
     </style>
 </head>
-
 <body>
 
-<!-- ================= HOME ================= -->
-<div id="home" class="page active">
-
-    <img src="YOUR-IMAGE-FILE.png">
-
-    <h1>NETLINK-ENTERPRISE SYSTEM</h1>
-    <p>Secure System Access Required</p>
-
-    <button class="green" onclick="goLogin()">START ACCESS</button>
+<!-- LOGIN PAGE -->
+<div id="login" class="page" style="display:flex;">
+    <h1>Netlink-Enterprise Login</h1>
+    <input type="password" id="code" placeholder="Enter Code">
+    <button onclick="login()">Enter</button>
 </div>
 
-<!-- ================= LOGIN ================= -->
-<div id="login" class="page">
-
-    <div id="box">
-        <h2>🔒 ENTER ACCESS CODE</h2>
-
-        <input type="password" id="password" placeholder="Enter Access Code">
-
-        <br>
-
-        <button class="blue" onclick="checkPassword()">UNLOCK</button>
-
-        <p id="message"></p>
-
-        <button class="red" onclick="goHome()">BACK</button>
-    </div>
+<!-- DASHBOARD -->
+<div id="dashboard" class="page">
+    <h1>Netlink-Enterprise</h1>
+    <button onclick="openEmployee()">Employee</button>
+    <button onclick="openFounder()">Founder / Co-Founder</button>
+    <button onclick="openDirector()">Director</button>
 </div>
 
-<!-- ================= EMPLOYEE PAGE ================= -->
+<!-- EMPLOYEE PAGE -->
 <div id="employee" class="page">
-
-    <h1>👥 INTERNAL SYSTEM ACCESS GRANTED</h1>
-    <p>Welcome to Netlink-Enterprise System</p>
-
-    <div class="row">
-
-        <div class="card">
-            <h3>Founder</h3>
-            <p>System Owner</p>
-        </div>
-
-        <div class="card">
-            <h3>Co-Founder</h3>
-            <p>Technical Lead</p>
-        </div>
-
-        <div class="card">
-            <h3>Employees</h3>
-            <p>Engineering & Development Team</p>
-        </div>
-
+    <div class="panel">
+        <h2>Assignments</h2>
+        <div id="assignments">No assignments yet.</div>
+        <button onclick="back()">Back</button>
     </div>
+</div>
 
-    <button class="green" onclick="goHome()">LOG OUT</button>
+<!-- FOUNDER PAGE -->
+<div id="founder" class="page">
+    <div class="panel">
+        <h2>Founder / Co-Founder Control Panel</h2>
+        <textarea id="announcementInput" placeholder="Write announcement..."></textarea>
+        <button onclick="postAnnouncement()">Send Announcement</button>
+
+        <h3>Announcements</h3>
+        <div id="announcements">No announcements yet.</div>
+
+        <h3>Assignments</h3>
+        <textarea id="assignmentInput" placeholder="Write assignment..."></textarea>
+        <button onclick="postAssignment()">Post Assignment</button>
+
+        <button onclick="back()">Back</button>
+    </div>
+</div>
+
+<!-- DIRECTOR PAGE -->
+<div id="director" class="page">
+    <div class="panel">
+        <h2>Director View</h2>
+        <h3>Announcements</h3>
+        <div id="directorAnnouncements">No announcements yet.</div>
+        <button onclick="back()">Back</button>
+    </div>
 </div>
 
 <script>
-    function show(page) {
-        document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
-        document.getElementById(page).classList.add("active");
+let role = "employee";
+
+function show(page) {
+    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+    document.getElementById(page).style.display = 'flex';
+}
+
+function login() {
+    const code = document.getElementById('code').value;
+
+    if (code === "314314") {
+        role = "founder";
+    } else if (code === "444444") {
+        role = "cofounder";
+    } else if (code === "555555") {
+        role = "director";
+    } else {
+        role = "employee";
     }
 
-    function goHome() {
-        show("home");
+    show("dashboard");
+}
+
+function openEmployee() {
+    show("employee");
+}
+
+function openFounder() {
+    if (role !== "founder" && role !== "cofounder") {
+        alert("Founder / Co-Founder access only");
+        return;
+    }
+    show("founder");
+}
+
+function openDirector() {
+    if (role !== "director") {
+        alert("Director access only");
+        return;
     }
 
-    function goLogin() {
-        show("login");
-    }
+    document.getElementById("directorAnnouncements").innerHTML = document.getElementById("announcements").innerHTML;
+    show("director");
+}
 
-    function checkPassword() {
-        const pass = document.getElementById("password").value;
-        const box = document.getElementById("box");
+function back() {
+    show("dashboard");
+}
 
-        if (pass === "201400") {
-            show("employee");
-        } else {
-            document.getElementById("message").innerText = "ACCESS DENIED";
+function postAnnouncement() {
+    const text = document.getElementById("announcementInput").value;
+    if (!text) return;
 
-            box.classList.add("shake");
-            setTimeout(() => box.classList.remove("shake"), 300);
-        }
-    }
+    document.getElementById("announcements").innerHTML += "<p>" + text + "</p>";
+    document.getElementById("announcementInput").value = "";
+}
+
+function postAssignment() {
+    const text = document.getElementById("assignmentInput").value;
+    if (!text) return;
+
+    document.getElementById("assignments").innerHTML = "<p>" + text + "</p>";
+    document.getElementById("assignmentInput").value = "";
+}
 </script>
 
 </body>
