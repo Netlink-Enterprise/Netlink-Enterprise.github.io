@@ -1,191 +1,204 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Netlink-Enterprise</title>
-
+    <meta charset="UTF-8">
+    <title>Netlink Enterprise | Secure Terminal</title>
     <style>
+        :root {
+            --bg: #050505;
+            --panel: #111;
+            --accent: #007bff;
+            --text: #eee;
+            --gold: #d4af37;
+        }
+
         body {
             margin: 0;
-            font-family: Arial, sans-serif;
-            background: radial-gradient(circle at top, #111, #000);
-            color: white;
-            text-align: center;
+            font-family: 'Courier New', Courier, monospace; /* Matrix/Terminal feel */
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
         }
 
         .page {
             display: none;
-            height: 100vh;
-            align-items: center;
-            justify-content: center;
+            width: 90%;
+            max-width: 500px;
             flex-direction: column;
-        }
-
-        input {
-            padding: 10px;
-            margin: 10px;
-            border-radius: 5px;
-            border: none;
-        }
-
-        button {
-            padding: 10px 20px;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            background: #222;
-            color: white;
-        }
-
-        button:hover {
-            background: #444;
+            gap: 15px;
         }
 
         .panel {
-            width: 80%;
-            max-width: 600px;
-            background: #111;
-            padding: 20px;
+            background: var(--panel);
+            padding: 30px;
             border-radius: 10px;
+            border: 1px solid #333;
+            text-align: center;
+            box-shadow: 0 0 20px rgba(0, 123, 255, 0.1);
         }
 
-        textarea {
+        input, textarea {
             width: 100%;
-            height: 120px;
+            padding: 12px;
+            margin: 10px 0;
+            background: #000;
+            border: 1px solid #444;
+            border-radius: 4px;
+            color: #00ff00; /* Hacker green text */
+            box-sizing: border-box;
+            outline: none;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            margin: 8px 0;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            background: #222;
+            color: white;
+            transition: 0.2s;
+        }
+
+        button:hover { background: #333; border: 1px solid var(--accent); }
+        .primary-btn { background: var(--accent); }
+        
+        #btn-founder { border: 1px solid var(--gold); color: var(--gold); }
+
+        .content-box {
+            text-align: left;
+            background: #000;
+            padding: 15px;
+            border-radius: 4px;
             margin-top: 10px;
+            border-left: 2px solid var(--accent);
+            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
 
-<!-- LOGIN -->
-<div id="login" class="page" style="display:flex;">
-    <h1>Netlink-Enterprise Login</h1>
-    <input type="password" id="code" placeholder="Enter Code">
-    <button onclick="login()">Enter</button>
+<!-- GATE 1: SYSTEM ENTRY -->
+<div id="gate" class="page" style="display:flex;">
+    <div class="panel">
+        <h1 style="color: var(--accent);">SYSTEM LOCKED</h1>
+        <p>Enter Master Entry Code</p>
+        <input type="password" id="entryCode" placeholder="MASTER CODE" onkeypress="if(event.key==='Enter') verifyEntry()">
+        <button class="primary-btn" onclick="verifyEntry()">UNLOCK SYSTEM</button>
+    </div>
+</div>
+
+<!-- GATE 2: ROLE LOGIN -->
+<div id="login" class="page">
+    <div class="panel">
+        <h1>NETLINK IDENTITY</h1>
+        <p>Verify Personnel Code</p>
+        <input type="password" id="roleCode" placeholder="PERSONNEL CODE" onkeypress="if(event.key==='Enter') login()">
+        <button class="primary-btn" onclick="login()">VERIFY ID</button>
+    </div>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="page">
-    <h1>Netlink-Enterprise</h1>
-    <button onclick="openEmployee()">Employee</button>
-    <button onclick="openFounder()">Founder</button>
-    <button onclick="openCofounder()">Co-Founder</button>
-    <button onclick="openDirector()">Director</button>
-</div>
-
-<!-- EMPLOYEE -->
-<div id="employee" class="page">
     <div class="panel">
-        <h2>Assignments</h2>
-        <div id="assignments">No assignments yet.</div>
-        <button onclick="back()">Back</button>
+        <h2>COMMAND CENTER</h2>
+        <p id="accessLevel" style="color: #888;"></p>
+        
+        <button id="btn-founder" onclick="openPage('founder')">FOUNDER PANEL</button>
+        <button id="btn-cofounder" onclick="openPage('cofounder')">CO-FOUNDER VIEW</button>
+        <button id="btn-director" onclick="openPage('director')">DIRECTOR INTEL</button>
+        <button id="btn-employee" onclick="openPage('employee')">EMPLOYEE TASKS</button>
+        
+        <button onclick="location.reload()" style="color: #ff4d4d; background: transparent; border: 1px solid #444;">DISCONNECT</button>
     </div>
 </div>
 
-<!-- FOUNDER -->
+<!-- PAGES -->
 <div id="founder" class="page">
     <div class="panel">
-        <h2>Founder Panel</h2>
-        <textarea id="announcementInput" placeholder="Write announcement..."></textarea>
-        <button onclick="postAnnouncement()">Send Announcement</button>
-
-        <h3>Announcements</h3>
-        <div id="announcements"></div>
-
-        <h3>Assignments</h3>
-        <textarea id="assignmentInput" placeholder="Write assignment..."></textarea>
-        <button onclick="postAssignment()">Post Assignment</button>
-
-        <button onclick="back()">Back</button>
+        <h2>FOUNDER CONTROL</h2>
+        <textarea id="annInput" placeholder="Global Announcement..."></textarea>
+        <button class="primary-btn" onclick="postData('ann')">BROADCAST</button>
+        <textarea id="assInput" placeholder="Employee Task..."></textarea>
+        <button class="primary-btn" onclick="postData('ass')">ASSIGN TASK</button>
+        <button onclick="openPage('dashboard')">RETURN</button>
     </div>
 </div>
 
-<!-- COFOUNDER -->
-<div id="cofounder" class="page">
+<div id="employee" class="page">
     <div class="panel">
-        <h2>Co-Founder View</h2>
-        <div id="cofounderView"></div>
-        <button onclick="back()">Back</button>
+        <h2>ASSIGNMENTS</h2>
+        <div id="assDisplay" class="content-box">No tasks found.</div>
+        <button onclick="openPage('dashboard')">RETURN</button>
     </div>
 </div>
 
-<!-- DIRECTOR -->
-<div id="director" class="page">
-    <div class="panel">
-        <h2>Director View (Announcements Only)</h2>
-        <div id="directorAnnouncements"></div>
-        <button onclick="back()">Back</button>
-    </div>
-</div>
+<div id="cofounder" class="page"><div class="panel"><h2>CO-FOUNDER</h2><div id="cofAnn" class="content-box"></div><button onclick="openPage('dashboard')">RETURN</button></div></div>
+<div id="director" class="page"><div class="panel"><h2>DIRECTOR</h2><div id="dirAnn" class="content-box"></div><button onclick="openPage('dashboard')">RETURN</button></div></div>
 
 <script>
-let role = "";
-
-function show(page){
-    document.querySelectorAll('.page').forEach(p=>p.style.display='none');
-    document.getElementById(page).style.display='flex';
-}
-
-function login(){
-    const code = document.getElementById("code").value;
-
-    if(code === "314314") role = "founder";
-    else if(code === "444444") role = "cofounder";
-    else if(code === "555555") role = "director";
-    else role = "none";
-
-    if(role === "none"){
-        alert("Wrong code");
-        show("login");
-        return;
+    // 1. MASTER ENTRY VERIFICATION
+    function verifyEntry() {
+        const code = document.getElementById("entryCode").value;
+        if (code === "201400") {
+            openPage('login');
+        } else {
+            alert("ACCESS DENIED: INCORRECT MASTER CODE");
+        }
     }
 
-    show("dashboard");
-}
+    // 2. ROLE LOGIN
+    function login() {
+        const code = document.getElementById("roleCode").value;
+        const btns = ["btn-founder", "btn-cofounder", "btn-director", "btn-employee"];
+        
+        // Hide all first
+        btns.forEach(id => document.getElementById(id).style.display = "none");
 
-function openEmployee(){
-    show("employee");
-}
+        if (code === "314314") {
+            // FOUNDER: SHOW EVERYTHING
+            btns.forEach(id => document.getElementById(id).style.display = "block");
+            document.getElementById("accessLevel").innerText = "LEVEL: FOUNDER";
+        } else if (code === "444444") {
+            document.getElementById("btn-cofounder").style.display = "block";
+            document.getElementById("btn-employee").style.display = "block";
+            document.getElementById("accessLevel").innerText = "LEVEL: CO-FOUNDER";
+        } else if (code === "555555") {
+            document.getElementById("btn-director").style.display = "block";
+            document.getElementById("btn-employee").style.display = "block";
+            document.getElementById("accessLevel").innerText = "LEVEL: DIRECTOR";
+        } else {
+            alert("IDENTITY NOT RECOGNIZED");
+            return;
+        }
+        openPage('dashboard');
+    }
 
-function openFounder(){
-    if(role !== "founder") return alert("Founder only");
-    show("founder");
-}
+    function openPage(id) {
+        document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
+        document.getElementById(id).style.display = 'flex';
+        
+        // Load data when entering pages
+        if(id === 'employee') document.getElementById("assDisplay").innerHTML = localStorage.getItem("net_ass") || "Clear.";
+        if(id === 'cofounder') document.getElementById("cofAnn").innerHTML = localStorage.getItem("net_ann") || "No data.";
+        if(id === 'director') document.getElementById("dirAnn").innerHTML = localStorage.getItem("net_ann") || "No data.";
+    }
 
-function openCofounder(){
-    if(role !== "cofounder") return alert("Co-Founder only");
-    loadCofounder();
-    show("cofounder");
-}
-
-function openDirector(){
-    if(role !== "director") return alert("Director only");
-    document.getElementById("directorAnnouncements").innerHTML = document.getElementById("announcements").innerHTML;
-    show("director");
-}
-
-function back(){
-    show("dashboard");
-}
-
-function postAnnouncement(){
-    const text = document.getElementById("announcementInput").value;
-    if(!text) return;
-    document.getElementById("announcements").innerHTML += "<p>"+text+"</p>";
-    document.getElementById("announcementInput").value="";
-}
-
-function postAssignment(){
-    const text = document.getElementById("assignmentInput").value;
-    if(!text) return;
-    document.getElementById("assignments").innerHTML = "<p>"+text+"</p>";
-    document.getElementById("assignmentInput").value="";
-}
-
-function loadCofounder(){
-    document.getElementById("cofounderView").innerHTML = document.getElementById("announcements").innerHTML;
-}
+    function postData(type) {
+        if(type === 'ann') {
+            localStorage.setItem("net_ann", document.getElementById("annInput").value);
+            document.getElementById("annInput").value = "";
+        } else {
+            localStorage.setItem("net_ass", document.getElementById("assInput").value);
+            document.getElementById("assInput").value = "";
+        }
+        alert("TRANSMISSION SUCCESSFUL");
+    }
 </script>
 
 </body>
