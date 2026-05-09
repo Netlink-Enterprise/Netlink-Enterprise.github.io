@@ -58,7 +58,7 @@
 </head>
 <body>
 
-<!-- LOGIN PAGE -->
+<!-- LOGIN -->
 <div id="login" class="page" style="display:flex;">
     <h1>Netlink-Enterprise Login</h1>
     <input type="password" id="code" placeholder="Enter Code">
@@ -69,11 +69,12 @@
 <div id="dashboard" class="page">
     <h1>Netlink-Enterprise</h1>
     <button onclick="openEmployee()">Employee</button>
-    <button onclick="openFounder()">Founder / Co-Founder</button>
+    <button onclick="openFounder()">Founder</button>
+    <button onclick="openCofounder()">Co-Founder</button>
     <button onclick="openDirector()">Director</button>
 </div>
 
-<!-- EMPLOYEE PAGE -->
+<!-- EMPLOYEE -->
 <div id="employee" class="page">
     <div class="panel">
         <h2>Assignments</h2>
@@ -82,15 +83,15 @@
     </div>
 </div>
 
-<!-- FOUNDER PAGE -->
+<!-- FOUNDER -->
 <div id="founder" class="page">
     <div class="panel">
-        <h2>Founder / Co-Founder Control Panel</h2>
+        <h2>Founder Panel</h2>
         <textarea id="announcementInput" placeholder="Write announcement..."></textarea>
         <button onclick="postAnnouncement()">Send Announcement</button>
 
         <h3>Announcements</h3>
-        <div id="announcements">No announcements yet.</div>
+        <div id="announcements"></div>
 
         <h3>Assignments</h3>
         <textarea id="assignmentInput" placeholder="Write assignment..."></textarea>
@@ -100,80 +101,90 @@
     </div>
 </div>
 
-<!-- DIRECTOR PAGE -->
+<!-- COFOUNDER -->
+<div id="cofounder" class="page">
+    <div class="panel">
+        <h2>Co-Founder View</h2>
+        <div id="cofounderView"></div>
+        <button onclick="back()">Back</button>
+    </div>
+</div>
+
+<!-- DIRECTOR -->
 <div id="director" class="page">
     <div class="panel">
-        <h2>Director View</h2>
-        <h3>Announcements</h3>
-        <div id="directorAnnouncements">No announcements yet.</div>
+        <h2>Director View (Announcements Only)</h2>
+        <div id="directorAnnouncements"></div>
         <button onclick="back()">Back</button>
     </div>
 </div>
 
 <script>
-let role = "employee";
+let role = "";
 
-function show(page) {
-    document.querySelectorAll('.page').forEach(p => p.style.display = 'none');
-    document.getElementById(page).style.display = 'flex';
+function show(page){
+    document.querySelectorAll('.page').forEach(p=>p.style.display='none');
+    document.getElementById(page).style.display='flex';
 }
 
-function login() {
-    const code = document.getElementById('code').value;
+function login(){
+    const code = document.getElementById("code").value;
 
-    if (code === "314314") {
-        role = "founder";
-    } else if (code === "444444") {
-        role = "cofounder";
-    } else if (code === "555555") {
-        role = "director";
-    } else {
-        role = "employee";
+    if(code === "314314") role = "founder";
+    else if(code === "444444") role = "cofounder";
+    else if(code === "555555") role = "director";
+    else role = "none";
+
+    if(role === "none"){
+        alert("Wrong code");
+        show("login");
+        return;
     }
 
     show("dashboard");
 }
 
-function openEmployee() {
+function openEmployee(){
     show("employee");
 }
 
-function openFounder() {
-    if (role !== "founder" && role !== "cofounder") {
-        alert("Founder / Co-Founder access only");
-        return;
-    }
+function openFounder(){
+    if(role !== "founder") return alert("Founder only");
     show("founder");
 }
 
-function openDirector() {
-    if (role !== "director") {
-        alert("Director access only");
-        return;
-    }
+function openCofounder(){
+    if(role !== "cofounder") return alert("Co-Founder only");
+    loadCofounder();
+    show("cofounder");
+}
 
+function openDirector(){
+    if(role !== "director") return alert("Director only");
     document.getElementById("directorAnnouncements").innerHTML = document.getElementById("announcements").innerHTML;
     show("director");
 }
 
-function back() {
+function back(){
     show("dashboard");
 }
 
-function postAnnouncement() {
+function postAnnouncement(){
     const text = document.getElementById("announcementInput").value;
-    if (!text) return;
-
-    document.getElementById("announcements").innerHTML += "<p>" + text + "</p>";
-    document.getElementById("announcementInput").value = "";
+    if(!text) return;
+    document.getElementById("announcements").innerHTML += "<p>"+text+"</p>";
+    document.getElementById("announcementInput").value="";
 }
 
-function postAssignment() {
+function postAssignment(){
     const text = document.getElementById("assignmentInput").value;
-    if (!text) return;
+    if(!text) return;
+    document.getElementById("assignments").innerHTML = "<p>"+text+"</p>";
+    document.getElementById("assignmentInput").value="";
+}
 
-    document.getElementById("assignments").innerHTML = "<p>" + text + "</p>";
-    document.getElementById("assignmentInput").value = "";
+function loadCofounder(){
+    document.getElementById("cofounderView").innerHTML = document.getElementById("announcements").innerHTML;
 }
 </script>
 
