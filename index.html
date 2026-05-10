@@ -7,273 +7,264 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0b0a14; 
-            --purple: #9d4edd; 
-            --border: rgba(157, 78, 221, 0.4); 
-            --green: #ccff00;
+            --bg: #020205; --glass: rgba(15, 15, 25, 0.95);
+            --purple: #9d4edd; --green: #ccff00; --border: rgba(157, 78, 221, 0.3);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Segoe UI', sans-serif; 
-            height: 100vh; 
-            overflow: hidden; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
+            background: radial-gradient(circle at top right, #1a0b2e, #020205); 
+            color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; 
         }
 
-        /* --- STAGE 1: ENTRY GATEWAY --- */
-        #gateway { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            width: 100%; 
-            position: absolute; 
-            z-index: 5; 
+        /* --- SCREEN CONTROLLER --- */
+        .page-screen {
+            display: none; height: 100vh; width: 100vw;
+            flex-direction: column; align-items: center; justify-content: center;
+            position: absolute; top: 0; left: 0; animation: fadeIn 0.4s ease forwards;
         }
-        .gate-card { width: 100%; max-width: 550px; padding: 60px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; }
+        .page-screen.active { display: flex; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* --- GATEWAY & HUB --- */
+        .gate-card {
+            padding: 50px; border: 1px solid var(--purple); background: var(--glass);
+            border-radius: 24px; text-align: center; display: flex; flex-direction: column; align-items: center;
+            box-shadow: 0 0 50px rgba(0,0,0,0.8);
+        }
         .entry-logo { 
-            width: 160px; height: 160px; margin-bottom: 50px; background: white; 
-            border-radius: 35px; padding: 15px; box-shadow: 0 0 30px rgba(157, 78, 221, 0.5); object-fit: contain; 
+            width: 100px; height: 100px; margin-bottom: 25px; border: 2px solid var(--purple); 
+            border-radius: 15px; box-shadow: 0 0 20px rgba(157, 78, 221, 0.4); object-fit: contain;
         }
-        h2 { font-size: 42px; letter-spacing: 5px; font-weight: 700; margin-bottom: 50px; text-transform: uppercase; }
-
-        .input-group { width: 100%; max-width: 450px; display: flex; flex-direction: column; gap: 25px; align-items: center; }
-        
-        input.main-input { 
-            background: rgba(0, 0, 0, 0.4); border: 2px solid var(--border); color: white; 
-            padding: 22px; width: 100%; text-align: center; border-radius: 18px; outline: none; 
-            font-size: 24px; letter-spacing: 2px; 
+        .main-input { 
+            background: rgba(0,0,0,0.6); border: 1px solid var(--purple); color: white; 
+            padding: 15px; width: 280px; text-align: center; border-radius: 8px; outline: none; font-size: 18px;
         }
-        
-        .action-btn { 
-            background: transparent; border: 2px solid var(--purple); color: #b392f0; 
-            padding: 14px 50px; border-radius: 100px; font-weight: 700; cursor: pointer; 
-            text-transform: uppercase; transition: 0.3s; 
+        .hub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 600px; margin-top: 30px; }
+        .hub-btn { 
+            background: var(--glass); border: 1px solid var(--border); padding: 30px; 
+            border-radius: 20px; cursor: pointer; transition: 0.3s; text-align: center;
         }
-        .action-btn:hover { background: var(--purple); color: white; box-shadow: 0 0 20px var(--purple); }
+        .hub-btn:hover { border-color: var(--purple); background: rgba(157, 78, 221, 0.1); transform: translateY(-5px); }
+        .hub-btn h4 { color: var(--purple); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; }
 
-        /* --- OVERLAYS (STRICT POINTER CONTROL) --- */
-        #hub-ui, #pin-overlay, #main-ui { 
-            display: none; 
-            pointer-events: none; /* Invisible layers won't block the gateway button */
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
+        /* --- MAIN DASHBOARD --- */
+        #main-ui.active { display: flex; flex-direction: row; align-items: stretch; }
+        aside {
+            width: 90px; background: rgba(0,0,0,0.5); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center; padding-top: 30px; gap: 20px;
+        }
+        .nav-icon { 
+            width: 55px; height: 55px; border-radius: 15px; display: flex; 
+            align-items: center; justify-content: center; font-size: 22px; 
+            color: #444; cursor: pointer; transition: 0.2s;
+        }
+        .nav-icon.active { background: var(--purple); color: white; box-shadow: 0 0 20px var(--purple); }
+
+        main { flex-grow: 1; padding: 50px; overflow-y: auto; position: relative; }
+        .view-section { display: none; max-width: 1200px; margin: 0 auto; }
+        .view-section.active { display: block; animation: fadeIn 0.3s ease; }
+
+        .user-badge { font-size: 11px; color: var(--purple); font-weight: bold; letter-spacing: 3px; margin-bottom: 10px; }
+        .main-title { font-size: 48px; font-weight: 800; margin-bottom: 30px; letter-spacing: -1px; }
+
+        .nice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; }
+        .nice-card {
+            background: var(--glass); border: 1px solid var(--border); border-radius: 24px;
+            padding: 35px; transition: 0.3s;
         }
 
-        /* Show Class */
-        .active-view { 
-            display: flex !important; 
-            pointer-events: auto !important; 
+        /* --- TOOLS & GAME --- */
+        .data-list { 
+            background: #000; border-radius: 12px; padding: 15px; margin: 15px 0; 
+            height: 250px; overflow-y: auto; font-family: 'JetBrains Mono', monospace; font-size: 13px; border: 1px solid #111; 
         }
+        .action-btn {
+            background: var(--purple); border: none; color: white;
+            padding: 12px 25px; border-radius: 100px; font-weight: 700; cursor: pointer; font-size: 12px;
+            text-transform: uppercase; transition: 0.3s;
+        }
+        .action-btn:hover { box-shadow: 0 0 20px var(--purple); transform: scale(1.05); }
 
-        #hub-ui { flex-direction: column; align-items: center; justify-content: center; z-index: 10; }
-        #pin-overlay { background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; backdrop-filter: blur(10px); }
-
-        /* --- DASHBOARD --- */
-        #main-ui { flex-direction: row; z-index: 200; }
-        aside { width: 100px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 30px; gap: 25px; background: rgba(0,0,0,0.2); }
-        .nav-icon { width: 60px; height: 60px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 24px; color: #444; cursor: pointer; transition: 0.2s; }
-        .nav-icon.active { background: var(--purple); color: white; box-shadow: 0 0 10px var(--purple); }
-        
-        main { flex-grow: 1; padding: 40px; overflow: auto; }
-        .view-section { display: none; }
-        .view-section.active { display: block; }
-        
-        #gameCanvas { background: #050505; border: 3px solid var(--green); display: none; margin: 0 auto; border-radius: 15px; cursor: crosshair; }
-        #simulation-screen { background: #000; color: var(--green); font-family: 'Courier New', monospace; padding: 20px; border-radius: 15px; height: 400px; border: 1px solid var(--green); margin-bottom: 20px; overflow-y: auto; }
+        #gameCanvas { background: #050505; border: 2px solid var(--green); border-radius: 15px; display: none; margin: 20px auto; cursor: crosshair; }
+        #simulation-screen { background: #000; color: var(--green); font-family: monospace; padding: 20px; border-radius: 12px; height: 300px; overflow-y: auto; border: 1px solid var(--green); }
     </style>
 </head>
 <body>
 
-    <div id="gateway">
+    <div id="scr-gate" class="page-screen active">
         <div class="gate-card">
-            <img src="logo.png" class="entry-logo" onerror="this.src='https://i.ibb.co/LzNfX8S/netlink-logo.png'">
-            <h2>Netlink Enterprise</h2>
-            <div class="input-group">
-                <input type="password" id="gate-input" class="main-input" placeholder="SYSTEM CODE" autofocus>
-                <button class="action-btn" onclick="checkGate()">Initialize</button>
-            </div>
+            <img src="https://cdn-icons-png.flaticon.com/512/606/606547.png" class="entry-logo">
+            <h2 style="letter-spacing: 2px; margin-bottom: 25px;">NETLINK ENTERPRISE</h2>
+            <input type="password" id="gate-input" class="main-input" placeholder="SYSTEM CODE" autofocus>
+            <button class="action-btn" style="margin-top:20px" onclick="app.checkGate()">INITIALIZE</button>
         </div>
     </div>
 
-    <div id="hub-ui">
-        <h2 style="margin-bottom: 50px; letter-spacing: 5px;">SELECT NODE</h2>
-        <div class="input-group">
-            <button class="action-btn" onclick="openPin()">Founder Manav</button>
+    <div id="scr-hub" class="page-screen">
+        <h2 style="letter-spacing: 8px; margin-bottom: 10px;">SELECT NODE</h2>
+        <p style="opacity:0.5; margin-bottom:30px">Biometric Verification Required</p>
+        <div class="hub-grid">
+            <div class="hub-btn" onclick="app.checkPin('founder')"><h4>MANAV</h4><h3>FOUNDER</h3></div>
+            <div class="hub-btn" onclick="app.checkPin('director')"><h4>COLTON</h4><h3>DIRECTOR</h3></div>
+            <div class="hub-btn" onclick="app.checkPin('cofounder')"><h4>KESHAV</h4><h3>CO-FOUNDER</h3></div>
+            <div class="hub-btn" onclick="app.enterEmployee()"><h4>TEAM</h4><h3>EMPLOYEE</h3></div>
         </div>
     </div>
 
-    <div id="pin-overlay">
-        <div class="gate-card">
-            <h3 style="margin-bottom: 25px; color: var(--purple); letter-spacing: 2px;">SECURE ACCESS</h3>
-            <div class="input-group">
-                <input type="password" id="pin-input" class="main-input" placeholder="ENTER PIN">
-                <button class="action-btn" onclick="verifyPin()">Verify Identity</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="main-ui">
+    <div id="main-ui" class="page-screen">
         <aside>
-            <div class="nav-icon active" onclick="showView('home', this)"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-icon" id="game-icon" onclick="showView('game-view', this)"><i class="fa-solid fa-crosshairs"></i></div>
-            <div class="nav-icon" onclick="location.reload()"><i class="fa-solid fa-power-off"></i></div>
+            <div class="nav-icon active" onclick="app.view('home', this)"><i class="fa-solid fa-layer-group"></i></div>
+            <div class="nav-icon" onclick="app.view('chat-view', this)"><i class="fa-solid fa-comments"></i></div>
+            <div class="nav-icon" id="game-icon" style="display:none;" onclick="app.view('game-view', this)"><i class="fa-solid fa-flask"></i></div>
+            <div class="nav-icon" onclick="location.reload()" style="margin-top:auto; margin-bottom:30px"><i class="fa-solid fa-power-off"></i></div>
         </aside>
+        
         <main>
+            <div class="user-badge" id="display-user">USER / ROLE</div>
+            
             <div id="home" class="view-section active">
-                <h1 style="font-size:52px; margin-bottom:20px; font-weight: 800;">Control Center</h1>
-                <p style="color: var(--purple); font-weight: bold; letter-spacing: 1px;">NODE STATUS: ONLINE</p>
+                <h1 class="main-title">Control Center</h1>
+                <div class="nice-grid">
+                    <div class="nice-card">
+                        <h3><i class="fa-solid fa-list-check" style="color:var(--purple); margin-right:10px"></i> Assignments</h3>
+                        <div class="data-list" id="task-list">>> Awaiting command from Admin...</div>
+                        <div id="admin-inputs" style="display:none;">
+                            <input type="text" id="task-in" placeholder="New task instruction..." style="background:none; border:1px solid #222; color:white; padding:10px; width:100%; border-radius:8px; margin-bottom:10px;">
+                            <button class="action-btn" onclick="app.addTask()">ADD TASK</button>
+                        </div>
+                    </div>
+                    <div class="nice-card">
+                        <h3><i class="fa-solid fa-tower-broadcast" style="color:var(--purple); margin-right:10px"></i> Status</h3>
+                        <p style="line-height:1.6; margin-top:15px">Node location: Cottleville, MO.<br>All sensors nominal. Prototype 1 environment ready for deployment.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div id="chat-view" class="view-section">
+                <h1 class="main-title">Secure Hub</h1>
+                <div class="nice-card">
+                    <div class="data-list" id="chat-box" style="height: 350px;">>> Quantum-encrypted channel ready.</div>
+                    <div style="display:flex; gap:10px">
+                        <input type="text" id="chat-in" placeholder="Send transmission..." style="flex-grow:1; background:rgba(0,0,0,0.4); border:1px solid #333; color:white; padding:15px; border-radius:10px;">
+                        <button class="action-btn" onclick="app.sendMsg()">SEND</button>
+                    </div>
+                </div>
             </div>
 
             <div id="game-view" class="view-section">
-                <h1 style="color:var(--green); margin-bottom:20px">Prototype 1 Combat Sim</h1>
-                <div id="simulation-screen">[SYSTEM]: Awaiting User Interaction...</div>
-                <canvas id="gameCanvas" width="800" height="500"></canvas>
-                <br>
-                <button id="run-engine-btn" class="action-btn" style="border-color:var(--green); color:var(--green)" onclick="runEngine()">Run Engine</button>
+                <h1 class="main-title" style="color:var(--green)">Prototype 1</h1>
+                <div id="simulation-screen">[SYSTEM]: Engine offline.</div>
+                <canvas id="gameCanvas" width="800" height="400"></canvas>
+                <button class="action-btn" id="run-btn" style="background:none; border:1px solid var(--green); color:var(--green); margin-top:20px" onclick="engine.start()">LAUNCH ENGINE</button>
             </div>
         </main>
     </div>
 
     <script>
-        // --- NAVIGATION LOGIC ---
-        function checkGate() {
-            if(document.getElementById('gate-input').value === "netlink2026") {
-                document.getElementById('gateway').style.display = 'none';
-                document.getElementById('hub-ui').classList.add('active-view');
-            } else { alert("ACCESS DENIED"); }
-        }
+        const ROLES = {
+            founder: { pin: "314314", name: "Manav Bisht", role: "FOUNDER", admin: true, game: true },
+            director: { pin: "555555", name: "Colton", role: "DIRECTOR", admin: true, game: true },
+            cofounder: { pin: "444444", name: "Keshav", role: "CO-FOUNDER", admin: true, game: false }
+        };
 
-        function openPin() {
-            document.getElementById('pin-overlay').classList.add('active-view');
-            document.getElementById('pin-input').focus();
-        }
-
-        function verifyPin() {
-            if(document.getElementById('pin-input').value === "314314") {
-                document.getElementById('pin-overlay').classList.remove('active-view');
-                document.getElementById('hub-ui').classList.remove('active-view');
-                document.getElementById('main-ui').classList.add('active-view');
-            } else { alert("INVALID PIN"); }
-        }
-
-        function showView(id, el) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
-            if(el) el.classList.add('active');
-        }
-
-        // --- GAME ENGINE ---
-        function runEngine() {
-            const screen = document.getElementById('simulation-screen');
-            const canvas = document.getElementById('gameCanvas');
-            document.getElementById('run-engine-btn').style.display = 'none';
-            screen.innerHTML = "[SYSTEM]: Calibrating WASD & Mouse Aim...<br>";
-            setTimeout(() => { 
-                screen.style.display='none'; 
-                canvas.style.display='block'; 
-                startCombat(); 
-            }, 1000);
-        }
-
-        function startCombat() {
-            const canvas = document.getElementById('gameCanvas');
-            const ctx = canvas.getContext('2d');
+        const app = {
+            user: null,
             
-            let player = { x: 400, y: 250, size: 35, speed: 5, angle: 0, score: 0 };
-            let bullets = [], enemies = [], keys = {}, mouse = { x: 0, y: 0 };
+            setScreen(id) {
+                document.querySelectorAll('.page-screen').forEach(s => s.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+            },
 
-            window.addEventListener('keydown', e => keys[e.code] = true);
-            window.addEventListener('keyup', e => keys[e.code] = false);
-            
-            canvas.addEventListener('mousemove', e => {
-                const rect = canvas.getBoundingClientRect();
-                mouse.x = e.clientX - rect.left;
-                mouse.y = e.clientY - rect.top;
-            });
+            checkGate() {
+                if(document.getElementById('gate-input').value === "netlink2026") this.setScreen('scr-hub');
+                else alert("INVALID SYSTEM CODE");
+            },
 
-            canvas.addEventListener('mousedown', () => {
-                let dx = mouse.x - player.x;
-                let dy = mouse.y - player.y;
-                let angle = Math.atan2(dy, dx);
-                bullets.push({ x: player.x, y: player.y, vx: Math.cos(angle) * 10, vy: Math.sin(angle) * 10 });
-            });
+            checkPin(key) {
+                const p = prompt(`PIN for ${key.toUpperCase()}:`);
+                if(p === ROLES[key].pin) { this.user = ROLES[key]; this.launch(); }
+            },
 
-            function spawnEnemy() {
-                enemies.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: 30, speed: 1.5 });
+            enterEmployee() {
+                this.user = { name: "Team", role: "EMPLOYEE", admin: false, game: false };
+                this.launch();
+            },
+
+            launch() {
+                this.setScreen('main-ui');
+                document.getElementById('display-user').innerText = `${this.user.name} // ${this.user.role}`;
+                if(this.user.admin) document.getElementById('admin-inputs').style.display = 'block';
+                if(this.user.game) document.getElementById('game-icon').style.display = 'flex';
+            },
+
+            view(id, el) {
+                document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+                document.getElementById(id).classList.add('active');
+                if(el) {
+                    document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
+                    el.classList.add('active');
+                }
+            },
+
+            addTask() {
+                const i = document.getElementById('task-in'), l = document.getElementById('task-list');
+                if(i.value) {
+                    if(l.innerText.includes('Awaiting')) l.innerHTML = "";
+                    l.innerHTML += `<div style="display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #111;">
+                        <span>> ${i.value}</span>
+                        <span style="color:red; cursor:pointer" onclick="this.parentElement.remove()">X</span>
+                    </div>`;
+                    i.value = "";
+                }
+            },
+
+            sendMsg() {
+                const i = document.getElementById('chat-in'), b = document.getElementById('chat-box');
+                if(i.value) {
+                    b.innerHTML += `<div style="margin-bottom:8px"><span style="color:var(--purple)">[${this.user.name}]:</span> ${i.value}</div>`;
+                    i.value = ""; b.scrollTop = b.scrollHeight;
+                }
             }
-            setInterval(spawnEnemy, 1800);
+        };
 
-            function update() {
-                if(keys['KeyW'] && player.y > 0) player.y -= player.speed;
-                if(keys['KeyS'] && player.y < canvas.height) player.y += player.speed;
-                if(keys['KeyA'] && player.x > 0) player.x -= player.speed;
-                if(keys['KeyD'] && player.x < canvas.width) player.x += player.speed;
-
-                player.angle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
-
-                bullets.forEach((b, i) => {
-                    b.x += b.vx; b.y += b.vy;
-                    if(b.x < 0 || b.x > canvas.width || b.y < 0 || b.y > canvas.height) bullets.splice(i, 1);
-                });
-
-                enemies.forEach((e, ei) => {
-                    let dx = player.x - e.x; let dy = player.y - e.y;
-                    let dist = Math.sqrt(dx*dx + dy*dy);
-                    e.x += (dx/dist) * e.speed; e.y += (dy/dist) * e.speed;
-
-                    bullets.forEach((b, bi) => {
-                        if(Math.hypot(b.x - e.x, b.y - e.y) < 20) {
-                            enemies.splice(ei, 1); bullets.splice(bi, 1); player.score += 20;
-                        }
-                    });
-
-                    if(Math.hypot(player.x - e.x, player.y - e.y) < 25) {
-                        alert("NODE COMPROMISED. Final Score: " + player.score); location.reload();
-                    }
-                });
-            }
-
-            function draw() {
-                ctx.fillStyle = '#050505'; ctx.fillRect(0,0,800,500);
+        const engine = {
+            start() {
+                const scr = document.getElementById('simulation-screen'), btn = document.getElementById('run-btn'), cvs = document.getElementById('gameCanvas');
+                btn.style.display = 'none';
+                scr.innerHTML = "[SYSTEM]: Booting Combat Engine...<br>";
                 
-                // Draw Agent (Asset Match)
-                ctx.save(); ctx.translate(player.x, player.y); ctx.rotate(player.angle);
-                ctx.fillStyle = '#b52f2f'; ctx.fillRect(-15, -12, 30, 24); // Shirt
-                ctx.fillStyle = '#e2ab86'; ctx.fillRect(-10, -10, 20, 20); // Head
-                ctx.fillStyle = 'black'; ctx.fillRect(2, -8, 10, 4); // Shades
-                ctx.restore();
+                let logs = ["Syncing Raspberry Pi...", "Loading Zombie Sprites...", "Calibrating WASD Controls...", "READY."];
+                let i = 0;
+                let timer = setInterval(() => {
+                    if(i < logs.length) { scr.innerHTML += `[LOG]: ${logs[i]}<br>`; i++; }
+                    else { clearInterval(timer); scr.style.display = 'none'; cvs.style.display = 'block'; this.runGame(); }
+                }, 500);
+            },
 
-                // Draw Zombies (Asset Match)
-                enemies.forEach(e => {
-                    ctx.fillStyle = '#659c6c'; ctx.fillRect(e.x-15, e.y-15, 30, 30); // Skin
-                    ctx.fillStyle = '#9e2d2d'; ctx.fillRect(e.x-5, e.y-10, 10, 5); // Blood
-                });
+            runGame() {
+                const canvas = document.getElementById('gameCanvas'), ctx = canvas.getContext('2d');
+                let player = { x: 400, y: 200, keys: {} };
+                
+                window.onkeydown = (e) => player.keys[e.code] = true;
+                window.onkeyup = (e) => player.keys[e.code] = false;
 
-                // Draw Bullets
-                ctx.fillStyle = 'yellow';
-                bullets.forEach(b => ctx.fillRect(b.x-2, b.y-2, 6, 6));
+                function loop() {
+                    if(player.keys['KeyW']) player.y -= 4;
+                    if(player.keys['KeyS']) player.y += 4;
+                    if(player.keys['KeyA']) player.x -= 4;
+                    if(player.keys['KeyD']) player.x += 4;
 
-                ctx.fillStyle = '#ccff00'; ctx.font = "20px monospace";
-                ctx.fillText("SCORE: " + player.score, 20, 35);
-
-                update();
-                requestAnimationFrame(draw);
+                    ctx.fillStyle = '#050505'; ctx.fillRect(0,0,800,400);
+                    ctx.fillStyle = '#ccff00'; ctx.fillRect(player.x-15, player.y-15, 30, 30); // Player Square
+                    ctx.fillStyle = 'white'; ctx.fillText("WASD TO MOVE", 10, 20);
+                    requestAnimationFrame(loop);
+                }
+                loop();
             }
-            draw();
-        }
+        };
 
-        // Handle Enter Keys
-        document.getElementById('gate-input').addEventListener('keypress', e => { if(e.key==='Enter') checkGate(); });
-        document.getElementById('pin-input').addEventListener('keypress', e => { if(e.key==='Enter') verifyPin(); });
+        document.getElementById('gate-input').addEventListener('keypress', (e) => { if(e.key==='Enter') app.checkGate(); });
     </script>
 </body>
 </html>
