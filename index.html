@@ -17,7 +17,7 @@
             color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; 
         }
 
-        /* --- 1. GATEWAY & OVERLAYS --- */
+        /* --- OVERLAYS --- */
         #gateway, #pin-overlay {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 100vh; position: fixed; width: 100%; z-index: 100; background: #000;
@@ -38,7 +38,7 @@
             padding: 15px; width: 280px; text-align: center; border-radius: 8px; outline: none; font-size: 1.1em;
         }
 
-        /* --- 2. HUB SELECTOR --- */
+        /* --- HUB SELECTOR --- */
         #hub-ui { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; }
         .hub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 600px; }
         .hub-btn { 
@@ -48,7 +48,7 @@
         .hub-btn:hover { border-color: var(--purple); background: rgba(157, 78, 221, 0.1); }
         .hub-btn h4 { color: var(--purple); font-size: 10px; letter-spacing: 2px; }
 
-        /* --- 3. MAIN UI --- */
+        /* --- MAIN UI --- */
         .wrapper { display: none; height: 100vh; width: 100vw; }
         .container { display: flex; height: 100%; }
 
@@ -63,31 +63,30 @@
         }
         .nav-icon.active { background: var(--purple); color: white; box-shadow: 0 0 20px var(--purple); }
 
-        main { flex-grow: 1; padding: 60px; overflow-y: auto; }
+        main { flex-grow: 1; padding: 40px; overflow-y: auto; }
         .view-section { display: none; }
         .view-section.active { display: block; }
 
         .user-badge { font-size: 11px; color: var(--purple); font-weight: bold; letter-spacing: 3px; margin-bottom: 10px; }
-        .main-title { font-size: 50px; font-weight: 800; margin-bottom: 40px; }
+        .main-title { font-size: 40px; font-weight: 800; margin-bottom: 30px; }
 
-        .nice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .nice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
         .nice-card {
             background: var(--glass); border: 1px solid var(--border); border-radius: 28px;
-            padding: 40px; text-align: left; transition: 0.3s;
+            padding: 30px; text-align: left; transition: 0.3s;
         }
 
-        /* --- FUNCTIONAL ELEMENTS --- */
-        .data-list { background: #000; border-radius: 12px; padding: 15px; margin-bottom: 15px; height: 250px; overflow-y: auto; font-family: monospace; border: 1px solid #111; }
+        /* --- GAME & DATA LISTS --- */
+        .data-list { background: #000; border-radius: 12px; padding: 15px; margin-bottom: 15px; height: 200px; overflow-y: auto; font-family: monospace; border: 1px solid #111; }
         .task-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #111; }
-        .del-btn { color: #ff4d4d; cursor: pointer; font-size: 10px; border: 1px solid #ff4d4d; padding: 2px 5px; border-radius: 4px; }
+        #simulation-screen { background: #000; color: var(--green); font-family: monospace; padding: 20px; border-radius: 15px; height: 400px; overflow-y: auto; border: 1px solid var(--green); }
+        #gameCanvas { background: #050505; border: 2px solid var(--green); display: none; cursor: none; margin: 0 auto; border-radius: 10px; }
 
         .action-btn {
             background: transparent; border: 1px solid var(--purple); color: var(--purple);
             padding: 10px 20px; border-radius: 100px; font-weight: 700; cursor: pointer; font-size: 11px; text-transform: uppercase;
         }
         .action-btn:hover { background: var(--purple); color: white; }
-
-        #simulation-screen { background: #000; color: var(--green); font-family: monospace; padding: 20px; border-radius: 15px; height: 300px; overflow-y: auto; border: 1px solid var(--green); }
     </style>
 </head>
 <body>
@@ -105,7 +104,7 @@
     <div id="pin-overlay">
         <div class="gate-card">
             <h3 id="pin-title" style="margin-bottom: 20px; color: var(--purple);">SECURE LOGIN</h3>
-            <input type="password" id="pin-input" class="main-input" placeholder="ENTER NODE PIN">
+            <input type="password" id="pin-input" class="main-input" placeholder="ENTER PIN">
             <br><br>
             <div style="display: flex; gap: 10px;">
                 <button class="action-btn" onclick="verifyPin()">VERIFY</button>
@@ -142,17 +141,17 @@
                         <div class="nice-card">
                             <i class="fa-solid fa-list-check"></i>
                             <h3>Assignments</h3>
-                            <div class="data-list" id="task-list">>> Waiting for command...</div>
+                            <div class="data-list" id="task-list">>> No active tasks.</div>
                             <div id="admin-inputs" style="display:none;">
-                                <input type="text" id="task-in" placeholder="New task..." style="background:none; border:1px solid #222; color:white; padding:8px; width:100%; border-radius:5px; margin-bottom:10px;">
+                                <input type="text" id="task-in" placeholder="Add task..." style="background:none; border:1px solid #222; color:white; padding:8px; width:100%; border-radius:5px; margin-bottom:10px;">
                                 <button class="action-btn" onclick="addTask()">ADD</button>
                             </div>
                         </div>
                         <div class="nice-card">
-                            <i class="fa-solid fa-tower-broadcast"></i>
-                            <h3>Quick Status</h3>
-                            <p>System localized to Cottleville Node. All sensors active.</p>
-                            <button class="action-btn" onclick="showView('chat-view')">Open Hub</button>
+                            <i class="fa-solid fa-microchip"></i>
+                            <h3>Hardware Status</h3>
+                            <p>Raspberry Pi 4 Online. Node: Cottleville, MO.</p>
+                            <button class="action-btn" onclick="showView('game-view')">Test Engine</button>
                         </div>
                     </div>
                 </div>
@@ -160,17 +159,20 @@
                 <div id="chat-view" class="view-section">
                     <h1 class="main-title">Secure Hub</h1>
                     <div class="nice-card">
-                        <div class="data-list" id="chat-box" style="height: 350px;">>> Encrypted channel opened.</div>
-                        <input type="text" id="chat-in" placeholder="Send transmission..." style="background:none; border:1px solid #222; color:white; padding:12px; width:80%; border-radius:5px;">
+                        <div class="data-list" id="chat-box" style="height: 350px;">>> Channel Encrypted.</div>
+                        <input type="text" id="chat-in" placeholder="Message..." style="background:none; border:1px solid #222; color:white; padding:12px; width:75%; border-radius:5px;">
                         <button class="action-btn" onclick="sendMsg()">SEND</button>
                     </div>
                 </div>
 
                 <div id="game-view" class="view-section">
                     <h1 class="main-title" style="color:var(--green)">Prototype 1</h1>
-                    <div id="simulation-screen">[SYSTEM]: Prototype Engine Offline.</div>
-                    <br>
-                    <button class="action-btn" id="run-engine-btn" style="border-color:var(--green); color:var(--green)" onclick="runEngine()">RUN ENGINE</button>
+                    <div class="nice-card" style="background: #000; text-align: center;">
+                        <div id="simulation-screen">[SYSTEM]: Engine Ready.</div>
+                        <canvas id="gameCanvas" width="600" height="400"></canvas>
+                        <br>
+                        <button class="action-btn" id="run-engine-btn" style="border-color:var(--green); color:var(--green)" onclick="runEngine()">RUN ENGINE</button>
+                    </div>
                 </div>
             </main>
         </div>
@@ -182,35 +184,29 @@
             director: { pin: "555555", name: "Colton", role: "DIRECTOR", admin: true, game: true },
             cofounder: { pin: "444444", name: "Keshav", role: "CO-FOUNDER", admin: true, game: false }
         };
-        let currentUser = null;
-        let pendingRole = null;
+        let currentUser = null, pendingRole = null;
 
         function checkGate() {
             if(document.getElementById('gate-input').value === "netlink2026") {
                 document.getElementById('gateway').style.display = 'none';
                 document.getElementById('hub-ui').style.display = 'flex';
-            } else { alert("DENIED"); }
+            } else { alert("ACCESS DENIED"); }
         }
 
-        // NEW: Handles the custom PIN screen
         function openPinGate(key) {
             pendingRole = key;
-            document.getElementById('pin-title').innerText = `LOGIN: ${key.toUpperCase()}`;
+            document.getElementById('pin-title').innerText = `NODE: ${key.toUpperCase()}`;
             document.getElementById('pin-input').value = "";
             document.getElementById('pin-overlay').style.display = 'flex';
             document.getElementById('pin-input').focus();
         }
 
         function verifyPin() {
-            const input = document.getElementById('pin-input').value;
-            if(input === ROLES[pendingRole].pin) {
+            if(document.getElementById('pin-input').value === ROLES[pendingRole].pin) {
                 currentUser = ROLES[pendingRole];
                 document.getElementById('pin-overlay').style.display = 'none';
                 launch();
-            } else {
-                alert("INVALID PIN");
-                document.getElementById('pin-input').value = "";
-            }
+            } else { alert("WRONG PIN"); }
         }
 
         function enterEmployee() {
@@ -235,42 +231,80 @@
             }
         }
 
-        function addTask() {
-            const i = document.getElementById('task-in');
-            const l = document.getElementById('task-list');
-            if(i.value) {
-                const id = Date.now();
-                if(l.innerText.includes('Waiting')) l.innerHTML = "";
-                l.innerHTML += `<div class="task-row" id="${id}"><span>> ${i.value}</span><span class="del-btn" onclick="document.getElementById('${id}').remove()">X</span></div>`;
-                i.value = "";
-            }
-        }
-
-        function sendMsg() {
-            const i = document.getElementById('chat-in');
-            const b = document.getElementById('chat-box');
-            if(i.value) {
-                b.innerHTML += `<div>[${currentUser.name}]: ${i.value}</div>`;
-                i.value = ""; b.scrollTop = b.scrollHeight;
-            }
-        }
-
+        // --- GAME ENGINE LOGIC ---
         function runEngine() {
             const screen = document.getElementById('simulation-screen');
             const btn = document.getElementById('run-engine-btn');
+            const canvas = document.getElementById('gameCanvas');
             btn.style.display = 'none';
-            screen.innerHTML = "[SYSTEM]: INITIALIZING BOOT SEQUENCE...<br>";
-            const logs = ["Loading Neural Network...", "Calibrating Movement...", "Syncing Hardware...", "SIMULATION ACTIVE."];
+            screen.innerHTML = "[SYSTEM]: LOADING PROTOCOLS...<br>";
+            
+            const logs = ["Syncing Controllers...", "Mapping Grid...", "Spawning Prototype...", "READY."];
             let i = 0;
             const interval = setInterval(() => {
                 if(i < logs.length) { screen.innerHTML += `[LOG]: ${logs[i]}<br>`; i++; }
-                else { clearInterval(interval); screen.innerHTML += "<br>*** ENGINE 100% ***"; }
-            }, 600);
+                else {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        screen.style.display = 'none';
+                        canvas.style.display = 'block';
+                        initGame();
+                    }, 800);
+                }
+            }, 500);
         }
 
-        // KEY LISTENERS
-        document.getElementById('gate-input').addEventListener('keypress', (e) => { if(e.key==='Enter') checkGate(); });
-        document.getElementById('pin-input').addEventListener('keypress', (e) => { if(e.key==='Enter') verifyPin(); });
+        function initGame() {
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            let player = { x: 280, y: 180, size: 25, speed: 5 };
+            let keys = {};
+
+            window.addEventListener('keydown', e => keys[e.key.toLowerCase()] = true);
+            window.addEventListener('keyup', e => keys[e.key.toLowerCase()] = false);
+
+            function update() {
+                if(keys['w'] && player.y > 0) player.y -= player.speed;
+                if(keys['s'] && player.y < canvas.height - player.size) player.y += player.speed;
+                if(keys['a'] && player.x > 0) player.x -= player.speed;
+                if(keys['d'] && player.x < canvas.width - player.size) player.x += player.speed;
+            }
+
+            function draw() {
+                ctx.fillStyle = '#050505'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+                // Player
+                ctx.fillStyle = '#ccff00'; ctx.fillRect(player.x, player.y, player.size, player.size);
+                // Grid lines for effect
+                ctx.strokeStyle = '#111'; ctx.beginPath();
+                for(let i=0; i<canvas.width; i+=40) { ctx.moveTo(i,0); ctx.lineTo(i,canvas.height); }
+                for(let i=0; i<canvas.height; i+=40) { ctx.moveTo(0,i); ctx.lineTo(canvas.width,i); }
+                ctx.stroke();
+                
+                ctx.fillStyle = "white"; ctx.font = "12px monospace";
+                ctx.fillText("PROTOTYPE 1: WASD TO MOVE", 10, 20);
+                
+                update();
+                requestAnimationFrame(draw);
+            }
+            draw();
+        }
+
+        // HELPERS
+        function addTask() {
+            const i = document.getElementById('task-in'), l = document.getElementById('task-list');
+            if(i.value) {
+                const id = Date.now();
+                if(l.innerText.includes('No active')) l.innerHTML = "";
+                l.innerHTML += `<div class="task-row" id="${id}"><span>> ${i.value}</span><span style="color:red;cursor:pointer" onclick="document.getElementById('${id}').remove()">X</span></div>`;
+                i.value = "";
+            }
+        }
+        function sendMsg() {
+            const i = document.getElementById('chat-in'), b = document.getElementById('chat-box');
+            if(i.value) { b.innerHTML += `<div>[${currentUser.name}]: ${i.value}</div>`; i.value = ""; b.scrollTop = b.scrollHeight; }
+        }
+        document.getElementById('gate-input').addEventListener('keypress', e => { if(e.key==='Enter') checkGate(); });
+        document.getElementById('pin-input').addEventListener('keypress', e => { if(e.key==='Enter') verifyPin(); });
     </script>
 </body>
 </html>
