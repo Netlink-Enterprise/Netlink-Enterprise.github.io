@@ -7,19 +7,14 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #020205;
-            --glass: rgba(15, 15, 25, 0.85);
-            --purple: #9d4edd;
-            --green: #ccff00;
-            --border: rgba(157, 78, 221, 0.3);
-            --terminal: #00FF41;
+            --bg: #020205; --glass: rgba(15, 15, 25, 0.85);
+            --purple: #9d4edd; --green: #ccff00; --border: rgba(157, 78, 221, 0.3);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             background: radial-gradient(circle at top right, #1a0b2e, #020205); 
-            color: white; font-family: 'Inter', 'Segoe UI', sans-serif; 
-            height: 100vh; overflow: hidden; 
+            color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; 
         }
 
         /* --- 1. GATEWAY --- */
@@ -29,12 +24,11 @@
         }
         .gate-card {
             padding: 50px; border: 1px solid var(--purple); background: var(--glass);
-            border-radius: 24px; text-align: center; box-shadow: 0 0 40px rgba(157, 78, 221, 0.2);
+            border-radius: 24px; text-align: center;
         }
-        .entry-logo { width: 90px; margin-bottom: 25px; border-radius: 12px; border: 1px solid var(--purple); }
         input.main-input { 
             background: rgba(0,0,0,0.6); border: 1px solid var(--purple); color: white; 
-            padding: 15px; width: 280px; text-align: center; border-radius: 8px; outline: none; font-size: 1.1em;
+            padding: 15px; width: 280px; text-align: center; border-radius: 8px; outline: none;
         }
 
         /* --- 2. HUB SELECTOR --- */
@@ -44,14 +38,13 @@
             background: var(--glass); border: 1px solid var(--border); padding: 30px; 
             border-radius: 20px; cursor: pointer; transition: 0.3s; text-align: center;
         }
-        .hub-btn:hover { border-color: var(--purple); transform: scale(1.02); background: rgba(157, 78, 221, 0.1); }
-        .hub-btn h4 { color: var(--purple); font-size: 12px; letter-spacing: 2px; margin-bottom: 5px; }
+        .hub-btn:hover { border-color: var(--purple); background: rgba(157, 78, 221, 0.1); }
+        .hub-btn h4 { color: var(--purple); font-size: 10px; letter-spacing: 2px; }
 
-        /* --- 3. THE NICE FOUNDER/TEAM PAGE --- */
+        /* --- 3. MAIN UI --- */
         .wrapper { display: none; height: 100vh; width: 100vw; }
         .container { display: flex; height: 100%; }
 
-        /* Sidebar Icons Match Image */
         aside {
             width: 100px; background: rgba(0,0,0,0.5); border-right: 1px solid var(--border);
             display: flex; flex-direction: column; align-items: center; padding-top: 30px; gap: 25px;
@@ -59,48 +52,44 @@
         .nav-icon { 
             width: 55px; height: 55px; border-radius: 15px; display: flex; 
             align-items: center; justify-content: center; font-size: 22px; 
-            color: #555; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+            color: #444; cursor: pointer; transition: 0.2s;
         }
         .nav-icon.active { background: var(--purple); color: white; box-shadow: 0 0 20px var(--purple); }
-        .nav-icon:hover:not(.active) { border-color: var(--purple); color: var(--purple); }
 
-        /* Content Area */
         main { flex-grow: 1; padding: 60px; overflow-y: auto; }
-        .user-badge { font-size: 13px; color: var(--purple); font-weight: bold; letter-spacing: 3px; margin-bottom: 10px; text-transform: uppercase; }
-        .main-title { font-size: 60px; font-weight: 800; letter-spacing: -2px; margin-bottom: 45px; }
+        .view-section { display: none; }
+        .view-section.active { display: block; }
 
-        /* Grid Cards Match Image */
+        .user-badge { font-size: 11px; color: var(--purple); font-weight: bold; letter-spacing: 3px; margin-bottom: 10px; }
+        .main-title { font-size: 50px; font-weight: 800; margin-bottom: 40px; }
+
         .nice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
         .nice-card {
             background: var(--glass); border: 1px solid var(--border); border-radius: 28px;
-            padding: 40px; text-align: left; backdrop-filter: blur(12px); transition: 0.3s;
+            padding: 40px; text-align: left; transition: 0.3s;
         }
-        .nice-card:hover { border-color: var(--purple); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
-        .card-label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block; }
-        .nice-card i { font-size: 35px; color: var(--purple); margin-bottom: 25px; display: block; }
-        .nice-card h3 { font-size: 24px; margin-bottom: 12px; }
-        .nice-card p { color: #888; font-size: 15px; margin-bottom: 25px; line-height: 1.6; }
 
-        /* Functional Elements */
-        .data-list { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px; max-height: 200px; overflow-y: auto; }
-        .task-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1a1a1a; font-family: monospace; }
-        .del-btn { color: #ff4d4d; cursor: pointer; font-weight: bold; }
-        
+        /* --- FUNCTIONAL BOXES --- */
+        .data-list { background: #000; border-radius: 12px; padding: 15px; margin-bottom: 15px; height: 200px; overflow-y: auto; font-family: monospace; border: 1px solid #111; }
+        .task-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #111; }
+        .del-btn { color: #ff4d4d; cursor: pointer; font-size: 10px; border: 1px solid #ff4d4d; padding: 2px 5px; border-radius: 4px; }
+
         .action-btn {
             background: transparent; border: 1px solid var(--purple); color: var(--purple);
-            padding: 12px 25px; border-radius: 100px; font-weight: 700; font-size: 12px;
-            cursor: pointer; transition: 0.3s; text-transform: uppercase;
+            padding: 10px 20px; border-radius: 100px; font-weight: 700; cursor: pointer; font-size: 11px;
         }
         .action-btn:hover { background: var(--purple); color: white; }
+
+        /* Prototype Simulation Screen */
+        #simulation-screen { background: #000; color: var(--green); font-family: monospace; padding: 20px; border-radius: 15px; display: none; }
     </style>
 </head>
 <body>
 
     <div id="gateway">
         <div class="gate-card">
-            <img src="logo.png" class="entry-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/606/606547.png'">
             <h2 style="letter-spacing: 2px; margin-bottom: 25px;">NETLINK ENTERPRISE</h2>
-            <input type="password" id="gate-input" class="main-input" placeholder="SYSTEM CODE">
+            <input type="password" id="gate-input" class="main-input" placeholder="SYSTEM CODE" autofocus>
             <br><br>
             <button class="action-btn" onclick="checkGate()">INITIALIZE</button>
         </div>
@@ -119,44 +108,52 @@
     <div id="main-ui" class="wrapper">
         <div class="container">
             <aside>
-                <div class="nav-icon active"><i class="fa-solid fa-layer-group"></i></div>
-                <div class="nav-icon" onclick="alert('Secure Chat Loading...')"><i class="fa-solid fa-comments"></i></div>
-                <div class="nav-icon" id="game-icon" style="display:none;" onclick="alert('Executing Prototype 1...')"><i class="fa-solid fa-flask"></i></div>
+                <div class="nav-icon active" onclick="showView('home', this)"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="nav-icon" onclick="showView('chat-view', this)"><i class="fa-solid fa-comments"></i></div>
+                <div class="nav-icon" id="game-icon" style="display:none;" onclick="showView('game-view', this)"><i class="fa-solid fa-flask"></i></div>
                 <div class="nav-icon" onclick="location.reload()"><i class="fa-solid fa-power-off"></i></div>
             </aside>
             
             <main>
                 <div class="user-badge" id="display-user">USER / ROLE</div>
-                <h1 class="main-title">Control Center</h1>
-
-                <div class="nice-grid">
-                    <div class="nice-card">
-                        <span class="card-label">Operational</span>
-                        <i class="fa-solid fa-list-check"></i>
-                        <h3>Assignments</h3>
-                        <div class="data-list" id="task-list">
-                            <div style="color:#444">> Waiting for input...</div>
+                
+                <div id="home" class="view-section active">
+                    <h1 class="main-title">Control Center</h1>
+                    <div class="nice-grid">
+                        <div class="nice-card">
+                            <i class="fa-solid fa-list-check"></i>
+                            <h3>Assignments</h3>
+                            <div class="data-list" id="task-list">>> Waiting for command...</div>
+                            <div id="admin-inputs" style="display:none;">
+                                <input type="text" id="task-in" placeholder="New task..." style="background:none; border:1px solid #222; color:white; padding:8px; width:100%; border-radius:5px; margin-bottom:10px;">
+                                <button class="action-btn" onclick="addTask()">ADD</button>
+                            </div>
                         </div>
-                        <div id="admin-inputs" style="display:none;">
-                            <input type="text" id="task-in" placeholder="New assignment..." style="background:none; border:1px solid #333; color:white; padding:10px; width:100%; border-radius:8px; margin-bottom:10px;">
-                            <button class="action-btn" onclick="addTask()">Add Task</button>
+                        <div class="nice-card">
+                            <i class="fa-solid fa-tower-broadcast"></i>
+                            <h3>Quick Status</h3>
+                            <p>System localized to Cottleville Node. All sensors active.</p>
+                            <button class="action-btn" onclick="showView('chat-view')">Open Hub</button>
                         </div>
                     </div>
+                </div>
 
+                <div id="chat-view" class="view-section">
+                    <h1 class="main-title">Secure Hub</h1>
                     <div class="nice-card">
-                        <span class="card-label">Communication</span>
-                        <i class="fa-solid fa-tower-broadcast"></i>
-                        <h3>Secure Hub</h3>
-                        <p>End-to-end encrypted messaging with active team nodes.</p>
-                        <button class="action-btn">Open Transmissions</button>
+                        <div class="data-list" id="chat-box" style="height: 350px;">>> Encrypted channel opened.</div>
+                        <input type="text" id="chat-in" placeholder="Send transmission..." style="background:none; border:1px solid #222; color:white; padding:12px; width:80%; border-radius:5px;">
+                        <button class="action-btn" onclick="sendMsg()">SEND</button>
                     </div>
+                </div>
 
-                    <div id="proto-card" class="nice-card" style="display:none;">
-                        <span class="card-label">Experimental</span>
-                        <i class="fa-solid fa-gamepad" style="color:var(--green)"></i>
-                        <h3 style="color:var(--green)">Prototype 1</h3>
-                        <p>Execute tactical simulation environment and logic tests.</p>
-                        <button class="action-btn" style="border-color:var(--green); color:var(--green)">Execute Build</button>
+                <div id="game-view" class="view-section">
+                    <h1 class="main-title" style="color:var(--green)">Prototype 1</h1>
+                    <div id="simulation-screen" style="display:block;">
+                        [SYSTEM]: Initializing Zombie Simulation...<br>
+                        [LOG]: Loading movement vectors...<br>
+                        [LOG]: Spawning prototype assets...<br><br>
+                        <button class="action-btn" style="border-color:var(--green); color:var(--green)">RUN ENGINE</button>
                     </div>
                 </div>
             </main>
@@ -175,48 +172,53 @@
             if(document.getElementById('gate-input').value === "netlink2026") {
                 document.getElementById('gateway').style.display = 'none';
                 document.getElementById('hub-ui').style.display = 'flex';
-            } else { alert("ACCESS DENIED"); }
+            } else { alert("DENIED"); }
         }
 
         function checkPin(key) {
-            const pin = prompt(`Enter PIN for ${key.toUpperCase()}:`);
-            if(pin === ROLES[key].pin) {
-                currentUser = ROLES[key];
-                launchDashboard();
-            } else { alert("INVALID PIN"); }
+            const pin = prompt(`PIN for ${key.toUpperCase()}:`);
+            if(pin === ROLES[key].pin) { currentUser = ROLES[key]; launch(); }
         }
 
         function enterEmployee() {
             currentUser = { name: "Team Member", role: "EMPLOYEE", admin: false, game: false };
-            launchDashboard();
+            launch();
         }
 
-        function launchDashboard() {
+        function launch() {
             document.getElementById('hub-ui').style.display = 'none';
             document.getElementById('main-ui').style.display = 'block';
-            
             document.getElementById('display-user').innerText = `${currentUser.name} / ${currentUser.role}`;
-            
             if(currentUser.admin) document.getElementById('admin-inputs').style.display = 'block';
-            if(currentUser.game) {
-                document.getElementById('proto-card').style.display = 'block';
-                document.getElementById('game-icon').style.display = 'flex';
+            if(currentUser.game) document.getElementById('game-icon').style.display = 'flex';
+        }
+
+        function showView(viewId, el) {
+            document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
+            document.getElementById(viewId).classList.add('active');
+            if(el) {
+                document.querySelectorAll('.nav-icon').forEach(n => n.classList.remove('active'));
+                el.classList.add('active');
             }
         }
 
         function addTask() {
-            const input = document.getElementById('task-in');
-            const list = document.getElementById('task-list');
-            if(input.value) {
+            const i = document.getElementById('task-in');
+            const l = document.getElementById('task-list');
+            if(i.value) {
                 const id = Date.now();
-                const html = `
-                    <div class="task-row" id="${id}">
-                        <span>> ${input.value}</span>
-                        ${currentUser.admin ? `<span class="del-btn" onclick="document.getElementById('${id}').remove()">DEL</span>` : ''}
-                    </div>`;
-                if(list.innerHTML.includes('Waiting for input')) list.innerHTML = "";
-                list.innerHTML += html;
-                input.value = "";
+                if(l.innerText.includes('Waiting')) l.innerHTML = "";
+                l.innerHTML += `<div class="task-row" id="${id}"><span>> ${i.value}</span><span class="del-btn" onclick="document.getElementById('${id}').remove()">X</span></div>`;
+                i.value = "";
+            }
+        }
+
+        function sendMsg() {
+            const i = document.getElementById('chat-in');
+            const b = document.getElementById('chat-box');
+            if(i.value) {
+                b.innerHTML += `<div>[${currentUser.name}]: ${i.value}</div>`;
+                i.value = ""; b.scrollTop = b.scrollHeight;
             }
         }
 
