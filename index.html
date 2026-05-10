@@ -2,209 +2,255 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlink-Enterprise | Management System</title>
+    <title>Netlink-Enterprise | Secure Portal</title>
     <style>
-        :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --success: #27ae60;
-            --danger: #e74c3c;
-            --bg: #f4f7f6;
+        /* THE ORIGINAL VIBE: TERMINAL DARK */
+        body {
+            background-color: #000000;
+            color: #00FF41; 
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+            padding: 20px;
+            overflow-x: hidden;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
-        
-        /* Login Screen */
-        #login-screen {
-            max-width: 400px;
-            margin: 100px auto;
-            background: white;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            text-align: center;
+        .container {
+            border: 2px solid #00FF41;
+            padding: 25px;
+            box-shadow: 0 0 20px #00FF41;
+            max-width: 1000px;
+            margin: 20px auto;
+            background-color: #050505;
         }
 
-        input[type="password"] {
-            width: 100%;
-            padding: 12px;
-            margin: 20px 0;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            box-sizing: border-box;
+        header {
+            border-bottom: 2px solid #00FF41;
+            padding-bottom: 20px;
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        /* Main Dashboard */
-        #main-app { display: none; max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; }
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
 
-        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--secondary); margin-bottom: 20px; }
+        /* LOGO PHOTO INTEGRATION */
+        #portal-logo {
+            width: 70px;
+            height: 70px;
+            border: 1px solid #00FF41;
+            object-fit: cover;
+        }
 
-        .nav-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+        .status-indicator {
+            text-align: right;
+            font-size: 0.9em;
+        }
+
+        /* EMPLOYEE BUTTONS */
+        .nav-buttons {
+            margin-bottom: 25px;
+        }
 
         button {
-            padding: 12px 20px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
+            background-color: #000;
+            color: #00FF41;
+            border: 1px solid #00FF41;
+            padding: 12px 24px;
+            font-family: 'Courier New', Courier, monospace;
             font-weight: bold;
-            transition: 0.3s;
+            cursor: pointer;
+            margin-right: 15px;
+            text-transform: uppercase;
+            transition: 0.2s;
         }
 
-        .btn-nav { background: var(--primary); color: white; }
-        .btn-nav:hover { background: var(--secondary); }
+        button:hover {
+            background-color: #00FF41;
+            color: #000;
+            box-shadow: 0 0 10px #00FF41;
+        }
 
-        .module { display: none; animation: fadeIn 0.3s ease-in; }
+        /* CONTENT MODULES */
+        .module {
+            display: none;
+            border: 1px solid #1a1a1a;
+            padding: 20px;
+            background-color: #080808;
+            min-height: 450px;
+            animation: scanline 0.5s ease-out;
+        }
 
-        /* Drawing Canvas */
+        /* DRAWING BLUEPRINTS */
         #blueprintCanvas {
-            background: #fff;
-            border: 2px dashed #bdc3c7;
+            background-color: #FFFFFF; /* High contrast for blueprinting */
+            border: 2px solid #00FF41;
             cursor: crosshair;
             display: block;
-            margin-top: 15px;
+            margin-bottom: 15px;
         }
 
-        /* Financials (Founder Only) */
-        .founder-only { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; }
+        /* MESSAGING HUB */
+        #chatDisplay {
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #00FF41;
+            padding: 15px;
+            background: #000;
+            margin-bottom: 15px;
+        }
 
-        /* Assignments */
-        .task-card { background: #f9f9f9; padding: 15px; margin: 10px 0; border-left: 5px solid var(--secondary); border-radius: 4px; }
+        #msgInput {
+            background: #000;
+            border: 1px solid #00FF41;
+            color: #00FF41;
+            padding: 10px;
+            width: 70%;
+            outline: none;
+        }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* ASSIGNMENTS VIEW */
+        .assignment-card {
+            border-left: 4px solid #00FF41;
+            background: #111;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+
+        .assignment-card h4 { margin: 0 0 5px 0; color: #fff; }
+
+        @keyframes scanline {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #00FF41; }
     </style>
 </head>
 <body>
 
-    <!-- SECTION 1: LOGIN -->
-    <div id="login-screen">
-        <h1>Netlink-Enterprise</h1>
-        <p>Enter Access Key</p>
-        <input type="password" id="passkey" placeholder="••••••••">
-        <button class="btn-nav" style="width: 100%;" onclick="checkLogin()">Enter Gateway</button>
-    </div>
-
-    <!-- SECTION 2: MAIN APPLICATION -->
-    <div id="main-app">
-        <header>
-            <h2 id="portal-title">Project Dashboard</h2>
-            <button onclick="logout()" style="background:var(--danger); color:white;">Logout</button>
-        </header>
-
-        <div class="nav-bar" id="nav-container">
-            <!-- Navigation buttons will be injected based on role -->
-        </div>
-
-        <hr>
-
-        <!-- MODULE: BLUEPRINTS (Everyone) -->
-        <div id="draw" class="module">
-            <h3>Blueprint Designer</h3>
-            <canvas id="blueprintCanvas" width="800" height="450"></canvas>
-            <div style="margin-top:10px;">
-                <button onclick="clearCanvas()" style="background:var(--danger); color:white;">Clear</button>
-                <button onclick="submitBlueprint()" style="background:var(--success); color:white;">Submit to Founder</button>
+<div class="container">
+    <header>
+        <div class="logo-section">
+            <img src="logo.png" alt="[LOGO]" id="portal-logo">
+            <div>
+                <h1 style="margin: 0;">NETLINK-ENTERPRISE</h1>
+                <small>SECURE EMPLOYEE PORTAL v1.0.4</small>
             </div>
         </div>
-
-        <!-- MODULE: ASSIGNMENTS (Everyone) -->
-        <div id="tasks" class="module">
-            <h3>Active Project Tasks</h3>
-            <div class="task-card"><strong>Hardware:</strong> Check TB6612FNG wiring for Raspberry Pi 4.</div>
-            <div class="task-card"><strong>Game Dev:</strong> Fix spacebar restart bug in Prototype 1.</div>
-            <div class="task-card"><strong>Design:</strong> 3D print the GBA SP clamshell prototype.</div>
+        <div class="status-indicator">
+            NODE: ONLINE<br>
+            ENCRYPTION: AES-256
         </div>
+    </header>
 
-        <!-- MODULE: FINANCIALS (Founder Only) -->
-        <div id="finance" class="module">
-            <h3>Financial Management</h3>
-            <div class="founder-only">
-                <p><strong>Project Budget:</strong> $1,250.00</p>
-                <p><strong>Hardware Costs:</strong> -$432.10</p>
-                <p><strong>Remaining:</strong> $817.90</p>
-            </div>
-        </div>
+    <div class="nav-buttons">
+        <button onclick="switchTab('draw')">Drawing</button>
+        <button onclick="switchTab('msg')">Message</button>
+        <button onclick="switchTab('task')">Assignment</button>
     </div>
 
-    <script>
-        let currentRole = "";
+    <!-- MODULE 1: DRAWING -->
+    <div id="draw" class="module">
+        <h3>BLUEPRINT DESIGNER</h3>
+        <canvas id="blueprintCanvas" width="850" height="400"></canvas>
+        <button onclick="clearCanvas()" style="border-color: #ff4141; color: #ff4141;">Wipe Data</button>
+        <button onclick="submitBlueprint()">Submit to Founder</button>
+    </div>
 
-        function checkLogin() {
-            const key = document.getElementById('passkey').value;
-            const app = document.getElementById('main-app');
-            const login = document.getElementById('login-screen');
-            const nav = document.getElementById('nav-container');
+    <!-- MODULE 2: MESSAGES -->
+    <div id="msg" class="module">
+        <h3>SECURE TRANSMISSIONS</h3>
+        <div id="chatDisplay">
+            <p style="color: #666;">[SYSTEM]: Terminal link established. Welcome, User.</p>
+        </div>
+        <input type="text" id="msgInput" placeholder="Enter command/message..." onkeypress="handleEnter(event)">
+        <button onclick="sendMessage()">Transmit</button>
+    </div>
 
-            if (key === "admin123") { // Password for Manav
-                currentRole = "Founder";
-                setupFounderUI(nav);
-                login.style.display = "none";
-                app.style.display = "block";
-                openModule('tasks');
-            } else if (key === "team456") { // Password for Keshav, Colton, Agastya
-                currentRole = "Employee";
-                setupEmployeeUI(nav);
-                login.style.display = "none";
-                app.style.display = "block";
-                openModule('tasks');
-            } else {
-                alert("Access Denied: Invalid Key");
-            }
+    <!-- MODULE 3: ASSIGNMENTS -->
+    <div id="task" class="module">
+        <h3>CURRENT DIRECTIVES</h3>
+        <div class="assignment-card">
+            <h4>TASK: ROBOTICS HARDWARE</h4>
+            <p>Finalize wiring for the TB6612FNG motor controller and check all Raspberry Pi 4 GPIO connections.</p>
+        </div>
+        <div class="assignment-card">
+            <h4>TASK: SIMULATION DEBUGGING</h4>
+            <p>Locate and fix the keyboard event listener bug causing accidental restarts in Prototype 1.</p>
+        </div>
+        <div class="assignment-card">
+            <h4>TASK: CHASSIS DESIGN</h4>
+            <p>Verify clamshell dimensions in Tinkercad for the handheld project before the next print phase.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Tab Switching Logic
+    function switchTab(tabId) {
+        document.querySelectorAll('.module').forEach(m => m.style.display = 'none');
+        document.getElementById(tabId).style.display = 'block';
+        if(tabId === 'draw') initCanvas();
+    }
+
+    // Canvas Logic
+    let canvas, ctx, drawing = false;
+
+    function initCanvas() {
+        canvas = document.getElementById('blueprintCanvas');
+        ctx = canvas.getContext('2d');
+        
+        canvas.onmousedown = () => drawing = true;
+        canvas.onmouseup = () => { drawing = false; ctx.beginPath(); };
+        canvas.onmousemove = draw;
+    }
+
+    function draw(e) {
+        if (!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        ctx.lineWidth = 3;
+        ctx.lineCap = 'round';
+        ctx.strokeStyle = '#000000'; // Black ink
+
+        ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
+    }
+
+    function clearCanvas() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function submitBlueprint() {
+        alert("CRITICAL: Blueprint data transmitted to Manav Bisht.");
+    }
+
+    // Messaging Logic
+    function sendMessage() {
+        const input = document.getElementById('msgInput');
+        const display = document.getElementById('chatDisplay');
+        if(input.value.trim() !== "") {
+            const time = new Date().toLocaleTimeString();
+            display.innerHTML += `<p><span style="color:#888;">[${time}]</span> USER: ${input.value}</p>`;
+            input.value = "";
+            display.scrollTop = display.scrollHeight;
         }
+    }
 
-        function setupFounderUI(nav) {
-            document.getElementById('portal-title').innerText = "Founder Portal | Welcome, Manav";
-            nav.innerHTML = `
-                <button class="btn-nav" onclick="openModule('tasks')">Assignments</button>
-                <button class="btn-nav" onclick="openModule('draw')">View Blueprints</button>
-                <button class="btn-nav" onclick="openModule('finance')">Financials</button>
-            `;
-        }
+    function handleEnter(e) {
+        if(e.key === 'Enter') sendMessage();
+    }
 
-        function setupEmployeeUI(nav) {
-            document.getElementById('portal-title').innerText = "Employee Workspace";
-            nav.innerHTML = `
-                <button class="btn-nav" onclick="openModule('tasks')">My Tasks</button>
-                <button class="btn-nav" onclick="openModule('draw')">Submit Blueprint</button>
-            `;
-        }
+    // Set default view
+    switchTab('task');
+</script>
 
-        function openModule(id) {
-            document.querySelectorAll('.module').forEach(m => m.style.display = 'none');
-            document.getElementById(id).style.display = 'block';
-            if(id === 'draw') initCanvas();
-        }
-
-        // CANVAS LOGIC
-        let canvas, ctx, drawing = false;
-
-        function initCanvas() {
-            canvas = document.getElementById('blueprintCanvas');
-            ctx = canvas.getContext('2d');
-            canvas.onmousedown = () => drawing = true;
-            canvas.onmouseup = () => { drawing = false; ctx.beginPath(); };
-            canvas.onmousemove = draw;
-        }
-
-        function draw(e) {
-            if (!drawing) return;
-            const rect = canvas.getBoundingClientRect();
-            ctx.lineWidth = 3;
-            ctx.lineCap = 'round';
-            ctx.strokeStyle = '#2c3e50';
-            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
-            ctx.stroke();
-            ctx.beginPath();
-            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
-        }
-
-        function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-        function submitBlueprint() {
-            alert("Success: Blueprint has been sent to the Founder.");
-        }
-
-        function logout() { location.reload(); }
-    </script>
 </body>
 </html>
