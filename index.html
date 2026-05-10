@@ -7,126 +7,156 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #050505; --sidebar: #0a0a0a; --card: #0d0d0d;
-            --purple: #8a2be2; --green: #ccff00; --gray: #a0a0a0;
-            --border: #1a1a1a; --terminal-green: #00FF41;
+            --bg: #020205;
+            --glass: rgba(15, 15, 25, 0.85);
+            --purple: #9d4edd;
+            --green: #ccff00;
+            --border: rgba(157, 78, 221, 0.3);
+            --terminal: #00FF41;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; }
+        body { 
+            background: radial-gradient(circle at top right, #1a0b2e, #020205); 
+            color: white; font-family: 'Inter', 'Segoe UI', sans-serif; 
+            height: 100vh; overflow: hidden; 
+        }
 
-        /* --- GATEWAY --- */
+        /* --- 1. GATEWAY --- */
         #gateway {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100vh; text-align: center; background: radial-gradient(circle, #111 0%, #000 100%);
-            position: fixed; width: 100%; z-index: 9999;
+            height: 100vh; position: fixed; width: 100%; z-index: 100; background: #000;
         }
         .gate-card {
-            padding: 50px; border: 1px solid var(--border); background: var(--sidebar);
-            border-radius: 25px; box-shadow: 0 0 50px rgba(0,0,0,1); display: flex; flex-direction: column; align-items: center;
+            padding: 50px; border: 1px solid var(--purple); background: var(--glass);
+            border-radius: 24px; text-align: center; box-shadow: 0 0 40px rgba(157, 78, 221, 0.2);
         }
-        .entry-logo { width: 100px; height: 100px; margin-bottom: 25px; border: 2px solid var(--green); border-radius: 15px; box-shadow: 0 0 20px var(--green); }
-        input#gate-input { background: #000; border: 1px solid var(--purple); color: white; padding: 15px; width: 300px; text-align: center; border-radius: 8px; outline: none; margin-top: 20px; font-size: 1.1em; }
+        .entry-logo { width: 90px; margin-bottom: 25px; border-radius: 12px; border: 1px solid var(--purple); }
+        input.main-input { 
+            background: rgba(0,0,0,0.6); border: 1px solid var(--purple); color: white; 
+            padding: 15px; width: 280px; text-align: center; border-radius: 8px; outline: none; font-size: 1.1em;
+        }
 
-        /* --- UI LAYOUT --- */
+        /* --- 2. HUB SELECTOR --- */
+        #hub-ui { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; }
+        .hub-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; width: 600px; }
+        .hub-btn { 
+            background: var(--glass); border: 1px solid var(--border); padding: 30px; 
+            border-radius: 20px; cursor: pointer; transition: 0.3s; text-align: center;
+        }
+        .hub-btn:hover { border-color: var(--purple); transform: scale(1.02); background: rgba(157, 78, 221, 0.1); }
+        .hub-btn h4 { color: var(--purple); font-size: 12px; letter-spacing: 2px; margin-bottom: 5px; }
+
+        /* --- 3. THE NICE FOUNDER/TEAM PAGE --- */
         .wrapper { display: none; height: 100vh; width: 100vw; }
-        aside { width: 260px; background: var(--sidebar); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 40px 20px; }
-        .sidebar-logo { width: 60px; height: 60px; margin: 0 auto 40px auto; border: 1px solid var(--green); border-radius: 10px; }
-        nav li { padding: 15px; margin-bottom: 8px; border-radius: 10px; cursor: pointer; color: var(--gray); display: flex; align-items: center; gap: 15px; transition: 0.3s; }
-        nav li:hover, nav li.active { background: rgba(138, 43, 226, 0.1); color: var(--purple); border-left: 4px solid var(--purple); }
+        .container { display: flex; height: 100%; }
 
-        /* --- CONTENT --- */
-        main { flex-grow: 1; padding: 40px; overflow-y: auto; }
-        .header-section { margin-bottom: 40px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 30px; }
-        
-        /* --- TERMINAL STYLES --- */
-        .terminal-text { font-family: 'Courier New', monospace; color: var(--terminal-green); }
-        .data-box { background: #000; border: 1px solid #1a1a1a; height: 300px; overflow-y: auto; padding: 15px; margin-bottom: 15px; }
-        .task-item { border-bottom: 1px solid #111; padding: 10px 0; display: flex; justify-content: space-between; align-items: center; }
-        .delete-btn { color: #ff4141; cursor: pointer; font-weight: bold; border: 1px solid #ff4141; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
-        .delete-btn:hover { background: #ff4141; color: white; }
+        /* Sidebar Icons Match Image */
+        aside {
+            width: 100px; background: rgba(0,0,0,0.5); border-right: 1px solid var(--border);
+            display: flex; flex-direction: column; align-items: center; padding-top: 30px; gap: 25px;
+        }
+        .nav-icon { 
+            width: 55px; height: 55px; border-radius: 15px; display: flex; 
+            align-items: center; justify-content: center; font-size: 22px; 
+            color: #555; cursor: pointer; transition: 0.3s; border: 1px solid transparent;
+        }
+        .nav-icon.active { background: var(--purple); color: white; box-shadow: 0 0 20px var(--purple); }
+        .nav-icon:hover:not(.active) { border-color: var(--purple); color: var(--purple); }
 
-        .input-group { display: flex; gap: 10px; }
-        .input-group input { flex-grow: 1; background: #000; border: 1px solid #333; color: var(--terminal-green); padding: 10px; border-radius: 5px; outline: none; }
+        /* Content Area */
+        main { flex-grow: 1; padding: 60px; overflow-y: auto; }
+        .user-badge { font-size: 13px; color: var(--purple); font-weight: bold; letter-spacing: 3px; margin-bottom: 10px; text-transform: uppercase; }
+        .main-title { font-size: 60px; font-weight: 800; letter-spacing: -2px; margin-bottom: 45px; }
+
+        /* Grid Cards Match Image */
+        .nice-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+        .nice-card {
+            background: var(--glass); border: 1px solid var(--border); border-radius: 28px;
+            padding: 40px; text-align: left; backdrop-filter: blur(12px); transition: 0.3s;
+        }
+        .nice-card:hover { border-color: var(--purple); box-shadow: 0 15px 40px rgba(0,0,0,0.4); }
+        .card-label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px; display: block; }
+        .nice-card i { font-size: 35px; color: var(--purple); margin-bottom: 25px; display: block; }
+        .nice-card h3 { font-size: 24px; margin-bottom: 12px; }
+        .nice-card p { color: #888; font-size: 15px; margin-bottom: 25px; line-height: 1.6; }
+
+        /* Functional Elements */
+        .data-list { background: rgba(0,0,0,0.3); border-radius: 12px; padding: 15px; margin-bottom: 20px; max-height: 200px; overflow-y: auto; }
+        .task-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #1a1a1a; font-family: monospace; }
+        .del-btn { color: #ff4d4d; cursor: pointer; font-weight: bold; }
         
-        .btn { padding: 12px 24px; border-radius: 8px; cursor: pointer; font-weight: bold; border: 1px solid; transition: 0.3s; background: none; text-transform: uppercase; }
-        .btn-purple { color: var(--purple); border-color: var(--purple); }
-        .btn-purple:hover { background: var(--purple); color: white; box-shadow: 0 0 15px var(--purple); }
-        .btn-green { color: var(--green); border-color: var(--green); }
-        .btn-green:hover { background: var(--green); color: black; box-shadow: 0 0 15px var(--green); }
+        .action-btn {
+            background: transparent; border: 1px solid var(--purple); color: var(--purple);
+            padding: 12px 25px; border-radius: 100px; font-weight: 700; font-size: 12px;
+            cursor: pointer; transition: 0.3s; text-transform: uppercase;
+        }
+        .action-btn:hover { background: var(--purple); color: white; }
     </style>
 </head>
 <body>
 
     <div id="gateway">
         <div class="gate-card">
-            <img src="logo.png" alt="Netlink Logo" class="entry-logo">
-            <h2 style="letter-spacing: 3px; font-weight: 300;">NETLINK-ENTERPRISE</h2>
-            <input type="password" id="gate-input" placeholder="ENTER SYSTEM CODE" autofocus>
+            <img src="logo.png" class="entry-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/606/606547.png'">
+            <h2 style="letter-spacing: 2px; margin-bottom: 25px;">NETLINK ENTERPRISE</h2>
+            <input type="password" id="gate-input" class="main-input" placeholder="SYSTEM CODE">
             <br><br>
-            <button class="btn btn-purple" onclick="unlockSystem()">ACCESS SYSTEM</button>
+            <button class="action-btn" onclick="checkGate()">INITIALIZE</button>
         </div>
     </div>
 
-    <div id="hub-ui" class="wrapper">
-        <div style="display: flex; height: 100%;">
-            <aside>
-                <img src="logo.png" class="sidebar-logo">
-                <nav>
-                    <ul>
-                        <li onclick="accessRole('founder')"><i class="fa-solid fa-crown"></i> Founder Manav</li>
-                        <li onclick="accessRole('director')"><i class="fa-solid fa-user-tie"></i> Director Colton</li>
-                        <li onclick="accessRole('cofounder')"><i class="fa-solid fa-handshake"></i> Co-founder Keshav</li>
-                        <li onclick="showEmployeeUI()"><i class="fa-solid fa-users"></i> Employees</li>
-                    </ul>
-                </nav>
-            </aside>
-            <main>
-                <h1 style="color: var(--purple); font-size: 40px; letter-spacing: 2px;">UNIFIED HUB</h1>
-                <p style="color: var(--gray); margin-top: 10px;">Select your terminal node. PIN required for leadership access.</p>
-            </main>
+    <div id="hub-ui">
+        <h2 style="margin-bottom: 40px; letter-spacing: 5px;">SELECT NODE</h2>
+        <div class="hub-grid">
+            <div class="hub-btn" onclick="checkPin('founder')"><h4>MANAV</h4><h3>FOUNDER</h3></div>
+            <div class="hub-btn" onclick="checkPin('director')"><h4>COLTON</h4><h3>DIRECTOR</h3></div>
+            <div class="hub-btn" onclick="checkPin('cofounder')"><h4>KESHAV</h4><h3>CO-FOUNDER</h3></div>
+            <div class="hub-btn" onclick="enterEmployee()"><h4>TEAM</h4><h3>EMPLOYEE</h3></div>
         </div>
     </div>
 
-    <div id="workspace-ui" class="wrapper">
-        <div style="display: flex; height: 100%;">
+    <div id="main-ui" class="wrapper">
+        <div class="container">
             <aside>
-                <img src="logo.png" class="sidebar-logo">
-                <nav>
-                    <li class="active"><i class="fa-solid fa-terminal"></i> Terminal</li>
-                    <li onclick="alert('Launching Project Blueprints...')"><i class="fa-solid fa-scroll"></i> Blueprints</li>
-                    <li id="game-nav" style="display:none;" onclick="alert('Launching Prototype 1 Simulation...')"><i class="fa-solid fa-flask"></i> Prototype 1</li>
-                </nav>
+                <div class="nav-icon active"><i class="fa-solid fa-layer-group"></i></div>
+                <div class="nav-icon" onclick="alert('Secure Chat Loading...')"><i class="fa-solid fa-comments"></i></div>
+                <div class="nav-icon" id="game-icon" style="display:none;" onclick="alert('Executing Prototype 1...')"><i class="fa-solid fa-flask"></i></div>
+                <div class="nav-icon" onclick="location.reload()"><i class="fa-solid fa-power-off"></i></div>
             </aside>
+            
             <main>
-                <div class="header-section">
-                    <div id="user-display" style="color: var(--gray); font-size: 14px; letter-spacing: 2px; text-transform: uppercase;">USER</div>
-                    <h1 id="role-display" style="font-size: 52px; letter-spacing: 4px;">NODE</h1>
-                    <div id="accent-bar" style="width: 60px; height: 4px; background: var(--purple); margin-top: 15px;"></div>
-                </div>
-                
-                <div class="grid">
-                    <div class="card">
-                        <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-comments"></i> SECURE MESSAGING</h3>
-                        <div class="data-box terminal-text" id="chat">>> System Secure. Transmissions encrypted.</div>
-                        <div class="input-group">
-                            <input type="text" id="chat-input" placeholder="Type transmission...">
-                            <button class="btn btn-green" onclick="sendChat()" style="padding: 8px 15px;">SEND</button>
+                <div class="user-badge" id="display-user">USER / ROLE</div>
+                <h1 class="main-title">Control Center</h1>
+
+                <div class="nice-grid">
+                    <div class="nice-card">
+                        <span class="card-label">Operational</span>
+                        <i class="fa-solid fa-list-check"></i>
+                        <h3>Assignments</h3>
+                        <div class="data-list" id="task-list">
+                            <div style="color:#444">> Waiting for input...</div>
+                        </div>
+                        <div id="admin-inputs" style="display:none;">
+                            <input type="text" id="task-in" placeholder="New assignment..." style="background:none; border:1px solid #333; color:white; padding:10px; width:100%; border-radius:8px; margin-bottom:10px;">
+                            <button class="action-btn" onclick="addTask()">Add Task</button>
                         </div>
                     </div>
 
-                    <div class="card">
-                        <h3 style="margin-bottom: 20px;"><i class="fa-solid fa-list-check"></i> ASSIGNMENTS</h3>
-                        <div class="data-box terminal-text" id="task-list">>> No current assignments.</div>
-                        
-                        <div id="admin-tools" style="display:none;">
-                            <div class="input-group">
-                                <input type="text" id="task-input" placeholder="Assign new task...">
-                                <button class="btn btn-purple" onclick="addTask()" style="padding: 8px 15px;">ADD</button>
-                            </div>
-                        </div>
+                    <div class="nice-card">
+                        <span class="card-label">Communication</span>
+                        <i class="fa-solid fa-tower-broadcast"></i>
+                        <h3>Secure Hub</h3>
+                        <p>End-to-end encrypted messaging with active team nodes.</p>
+                        <button class="action-btn">Open Transmissions</button>
+                    </div>
+
+                    <div id="proto-card" class="nice-card" style="display:none;">
+                        <span class="card-label">Experimental</span>
+                        <i class="fa-solid fa-gamepad" style="color:var(--green)"></i>
+                        <h3 style="color:var(--green)">Prototype 1</h3>
+                        <p>Execute tactical simulation environment and logic tests.</p>
+                        <button class="action-btn" style="border-color:var(--green); color:var(--green)">Execute Build</button>
                     </div>
                 </div>
             </main>
@@ -134,110 +164,63 @@
     </div>
 
     <script>
-        const PINS = { 
-            founder: { pin: "314314", name: "Manav", canGame: true }, 
-            director: { pin: "555555", name: "Colton", canGame: true }, 
-            cofounder: { pin: "444444", name: "Keshav", canGame: false } 
+        const ROLES = {
+            founder: { pin: "314314", name: "Manav Bisht", role: "FOUNDER", admin: true, game: true },
+            director: { pin: "555555", name: "Colton", role: "DIRECTOR", admin: true, game: true },
+            cofounder: { pin: "444444", name: "Keshav", role: "CO-FOUNDER", admin: true, game: false }
         };
-        const ENTRY_CODE = "netlink2026";
-        let isLeadership = false;
+        let currentUser = null;
 
-        function unlockSystem() {
-            const input = document.getElementById('gate-input').value;
-            if(input === ENTRY_CODE) {
+        function checkGate() {
+            if(document.getElementById('gate-input').value === "netlink2026") {
                 document.getElementById('gateway').style.display = 'none';
-                document.getElementById('hub-ui').style.display = 'block';
-            } else {
-                alert("ACCESS DENIED: INVALID SYSTEM CODE");
-                document.getElementById('gate-input').value = "";
-            }
+                document.getElementById('hub-ui').style.display = 'flex';
+            } else { alert("ACCESS DENIED"); }
         }
 
-        function accessRole(roleType) {
-            const pin = prompt(`Enter PIN for ${roleType.toUpperCase()}:`);
-            const data = PINS[roleType];
-            
-            if(pin === data.pin) {
-                isLeadership = true;
-                launchUI(data.name, roleType.toUpperCase(), true, data.canGame);
-            } else {
-                alert("INVALID PIN: ACCESS DENIED");
-            }
+        function checkPin(key) {
+            const pin = prompt(`Enter PIN for ${key.toUpperCase()}:`);
+            if(pin === ROLES[key].pin) {
+                currentUser = ROLES[key];
+                launchDashboard();
+            } else { alert("INVALID PIN"); }
         }
 
-        function showEmployeeUI() {
-            isLeadership = false;
-            launchUI("Team Member", "EMPLOYEE", false, false);
+        function enterEmployee() {
+            currentUser = { name: "Team Member", role: "EMPLOYEE", admin: false, game: false };
+            launchDashboard();
         }
 
-        function launchUI(name, role, isAdmin, canGame) {
-            document.querySelectorAll('.wrapper').forEach(w => w.style.display = 'none');
-            document.getElementById('workspace-ui').style.display = 'block';
+        function launchDashboard() {
+            document.getElementById('hub-ui').style.display = 'none';
+            document.getElementById('main-ui').style.display = 'block';
             
-            // Set Titles
-            document.getElementById('user-display').innerText = name;
-            document.getElementById('role-display').innerText = role;
+            document.getElementById('display-user').innerText = `${currentUser.name} / ${currentUser.role}`;
             
-            // Style based on role
-            const roleEl = document.getElementById('role-display');
-            const accent = document.getElementById('accent-bar');
-            
-            if(isAdmin) {
-                roleEl.style.color = "var(--purple)";
-                roleEl.style.textShadow = "0 0 15px var(--purple)";
-                accent.style.background = "var(--purple)";
-                document.getElementById('admin-tools').style.display = "block";
-            } else {
-                roleEl.style.color = "var(--terminal-green)";
-                roleEl.style.textShadow = "0 0 15px var(--terminal-green)";
-                accent.style.background = "var(--terminal-green)";
-                document.getElementById('admin-tools').style.display = "none";
-            }
-
-            // Show Game button for Manav/Colton
-            document.getElementById('game-nav').style.display = canGame ? "flex" : "none";
-        }
-
-        function sendChat() {
-            const i = document.getElementById('chat-input');
-            const c = document.getElementById('chat');
-            if(i.value) { 
-                const user = document.getElementById('user-display').innerText;
-                const time = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-                c.innerHTML += `<div style="margin-bottom:5px;">> [${time}] ${user}: ${i.value}</div>`; 
-                i.value = ""; 
-                c.scrollTop = c.scrollHeight; 
+            if(currentUser.admin) document.getElementById('admin-inputs').style.display = 'block';
+            if(currentUser.game) {
+                document.getElementById('proto-card').style.display = 'block';
+                document.getElementById('game-icon').style.display = 'flex';
             }
         }
 
         function addTask() {
-            const i = document.getElementById('task-input');
+            const input = document.getElementById('task-in');
             const list = document.getElementById('task-list');
-            if(i.value) {
-                const id = "task-" + Date.now();
-                // We add the delete button, but the CSS hides it if you aren't leadership (logic below)
-                list.innerHTML += `
-                    <div class="task-item" id="${id}">
-                        <span>> ${i.value}</span> 
-                        <span class="delete-btn" onclick="removeTask('${id}')">DEL</span>
+            if(input.value) {
+                const id = Date.now();
+                const html = `
+                    <div class="task-row" id="${id}">
+                        <span>> ${input.value}</span>
+                        ${currentUser.admin ? `<span class="del-btn" onclick="document.getElementById('${id}').remove()">DEL</span>` : ''}
                     </div>`;
-                i.value = "";
-                list.scrollTop = list.scrollHeight;
+                if(list.innerHTML.includes('Waiting for input')) list.innerHTML = "";
+                list.innerHTML += html;
+                input.value = "";
             }
         }
 
-        function removeTask(id) {
-            if(isLeadership) {
-                document.getElementById(id).remove();
-            } else {
-                alert("Unauthorized: Only leadership can remove assignments.");
-            }
-        }
-
-        // Listen for Enter keys
-        document.getElementById('gate-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') unlockSystem(); });
-        document.getElementById('chat-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') sendChat(); });
-        document.getElementById('task-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') addTask(); });
+        document.getElementById('gate-input').addEventListener('keypress', (e) => { if(e.key==='Enter') checkGate(); });
     </script>
 </body>
 </html>
