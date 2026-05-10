@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlink-Enterprise | Global Tactical Terminal</title>
+    <title>Netlink-Enterprise | Tactical Terminal v5.0</title>
     <style>
         :root {
             --primary: #00ffcc; 
@@ -17,7 +17,7 @@
         body {
             background-color: var(--bg-dark);
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', Tahoma, sans-serif;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -26,18 +26,12 @@
             overflow: hidden;
         }
 
-        /* --- LOGO STYLING --- */
+        /* --- LOGO --- */
         .company-logo {
             width: 280px;
             height: auto;
             margin-bottom: 20px;
             filter: drop-shadow(0 0 15px rgba(0, 255, 204, 0.3));
-            animation: glow 3s infinite alternate;
-        }
-
-        @keyframes glow {
-            from { filter: drop-shadow(0 0 5px rgba(0, 255, 204, 0.2)); }
-            to { filter: drop-shadow(0 0 20px rgba(0, 255, 204, 0.5)); }
         }
 
         /* --- LOGIN SCREEN --- */
@@ -47,9 +41,8 @@
             background: rgba(15, 15, 15, 0.95);
             padding: 50px;
             border: 1px solid var(--primary);
-            box-shadow: 0 0 40px rgba(0, 255, 204, 0.1);
+            box-shadow: 0 0 30px rgba(0, 255, 204, 0.1);
             border-radius: 12px;
-            z-index: 10;
         }
 
         input {
@@ -62,12 +55,11 @@
             outline: none;
             width: 250px;
             font-family: 'Courier New', monospace;
-            font-size: 1.1rem;
             border-radius: 4px;
         }
 
         /* --- DASHBOARD --- */
-        #dashboard { display: none; width: 95%; max-width: 1200px; padding: 20px; animation: fadeIn 0.5s; }
+        #dashboard { display: none; width: 95%; max-width: 1200px; padding: 20px; }
         .profile-container { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; }
         
         .card { 
@@ -79,7 +71,7 @@
             border-radius: 8px;
             transition: transform 0.2s;
         }
-        .card:hover { transform: translateY(-5px); }
+        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
 
         .active-session { 
             display: none; 
@@ -93,14 +85,11 @@
         .section-box { 
             background: #0a0a0a; 
             border: 1px solid #333; 
-            padding: 30px; 
-            min-height: 400px; 
-            position: relative; 
+            padding: 25px; 
+            min-height: 450px; 
             border-radius: 8px;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.5);
         }
 
-        /* --- BUTTONS --- */
         .btn {
             background: transparent;
             border: 1px solid var(--primary);
@@ -111,28 +100,13 @@
             margin-top: 10px;
             font-weight: bold;
             text-transform: uppercase;
-            transition: all 0.3s;
+            transition: 0.3s;
             border-radius: 4px;
-            letter-spacing: 1px;
         }
-        .btn:hover { background: var(--primary); color: black; box-shadow: 0 0 15px var(--primary); }
-        .btn:focus { outline: none; }
+        .btn:hover { background: var(--primary); color: black; box-shadow: 0 0 10px var(--primary); }
 
-        /* --- GAME OVERLAY --- */
-        #game-container {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.98);
-            z-index: 1000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        canvas { background: #000; border: 4px solid #222; box-shadow: 0 0 50px rgba(0,0,0,1); }
-
-        /* --- UI ELEMENTS --- */
-        .msg-log {
+        /* --- LOGS & ASSIGNMENTS --- */
+        .msg-log, #assignment-list {
             background: #000;
             height: 220px;
             overflow-y: auto;
@@ -143,16 +117,6 @@
             color: #00ff00;
             margin-bottom: 10px;
             border-radius: 4px;
-        }
-
-        #score-display {
-            position: absolute;
-            top: 30px;
-            right: 50px;
-            font-size: 28px;
-            color: var(--primary);
-            font-family: 'Courier New', monospace;
-            text-shadow: 0 0 10px var(--primary);
         }
 
         .role-badge {
@@ -166,64 +130,76 @@
             border: 1px solid #333;
         }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        /* --- GAME --- */
+        #game-container {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98);
+            z-index: 1000;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        canvas { background: #000; border: 4px solid #222; }
+        #score-display { position: absolute; top: 30px; right: 50px; font-size: 28px; color: var(--primary); font-family: 'Courier New', monospace; }
     </style>
 </head>
 <body>
 
     <div id="login-screen">
-        <img src="logo.png" alt="Netlink-Enterprise Logo" class="company-logo" onerror="this.style.display='none'; console.warn('Place logo.png in the folder.');">
-        <h1 style="letter-spacing: 10px; margin-top: 0; font-weight: 300; color: var(--primary);">SYSTEM ACCESS</h1>
-        <p style="color: #666; font-size: 12px; margin-bottom: 20px;">ENCRYPTED OVERLINK v4.0.2</p>
-        <input type="password" id="entry-code" placeholder="ACCESS CODE" onkeydown="if(event.key==='Enter')checkEntry()">
-        <button class="btn" onclick="checkEntry()">INITIALIZE TERMINAL</button>
+        <img src="logo.png" alt="Netlink Logo" class="company-logo" onerror="this.style.display='none';">
+        <h1 style="letter-spacing: 8px; color: var(--primary);">SYSTEM ACCESS</h1>
+        <input type="password" id="entry-code" placeholder="ENCRYPTED CODE" onkeydown="if(event.key==='Enter')checkEntry()">
+        <button class="btn" onclick="checkEntry()">INITIALIZE</button>
     </div>
 
     <div id="dashboard">
         <div class="profile-container">
             <div class="card" style="border-color: var(--founder-glow)">
-                <button class="btn" onclick="loginProfile('Founder', '314314')">VERIFY ID</button>
-                <div style="margin-top:10px; font-weight: bold;">Manav Bisht</div>
-                <div style="font-size: 10px; color: var(--founder-glow);">FOUNDER</div>
+                <button class="btn" onclick="loginProfile('Founder', '314314')">LOGIN</button>
+                <p>Manav Bisht</p>
             </div>
             <div class="card" style="border-color: var(--cofounder-glow)">
-                <button class="btn" onclick="loginProfile('Co-Founder', '444444')">VERIFY ID</button>
-                <div style="margin-top:10px; font-weight: bold;">Keshav</div>
-                <div style="font-size: 10px; color: var(--cofounder-glow);">CO-FOUNDER</div>
+                <button class="btn" onclick="loginProfile('Co-Founder', '444444')">LOGIN</button>
+                <p>Keshav</p>
             </div>
             <div class="card">
-                <button class="btn" onclick="loginProfile('Director', '55555')">VERIFY ID</button>
-                <div style="margin-top:10px; font-weight: bold;">Colton</div>
-                <div style="font-size: 10px; color: #888;">DIRECTOR</div>
+                <button class="btn" onclick="loginProfile('Director', '55555')">LOGIN</button>
+                <p>Colton</p>
             </div>
         </div>
 
         <div id="session-ui" class="active-session">
             <div class="section-box">
                 <div id="role-status" class="role-badge">UNAUTHORIZED</div>
-                <h3 id="user-display" style="color: #aaa; text-transform: uppercase;">Command Console</h3>
                 
-                <div id="founder-section" style="display:none; margin-bottom: 20px;">
-                    <button class="btn" style="border-color: #ffd700; color: #ffd700;" onclick="toggleEmployeeMenu()">EMPLOYEE MANAGEMENT</button>
-                    <div id="profit-controls" style="display:none; margin-top:15px; border:1px solid #ffd700; padding:15px; background: #000;">
-                        <input type="text" id="emp-name" placeholder="Employee Name" style="width: 85%;">
-                        <input type="number" id="emp-amount" placeholder="Grant Amount ($)" style="width: 85%;">
-                        <button class="btn" onclick="processPayment()">AUTHORIZE PAYOUT</button>
+                <h3 style="color: var(--primary);">ACTIVE ASSIGNMENTS</h3>
+                <div id="assignment-list">No pending directives found.</div>
+
+                <div id="founder-tools" style="display:none; margin-top: 20px;">
+                    <button class="btn" style="border-color: #ffd700; color: #ffd700;" onclick="createAssignment()">NEW DIRECTIVE</button>
+                    <button class="btn" style="border-color: #ffd700; color: #ffd700;" id="payout-btn" onclick="togglePayoutMenu()">PAYOUTS</button>
+                    
+                    <div id="payout-menu" style="display:none; margin-top:10px; border:1px solid #333; padding:10px;">
+                        <input type="text" id="payout-name" placeholder="Name" style="width: 80%;">
+                        <input type="number" id="payout-val" placeholder="Amount" style="width: 80%;">
+                        <button class="btn" onclick="execPayout()">SEND FUNDS</button>
                     </div>
                 </div>
 
                 <div id="game-access" style="display:none;">
-                    <button class="btn" id="start-game-btn" style="border-color: var(--danger); color: var(--danger);" onclick="startGame()">RUN PROTOTYPE 1</button>
+                    <button class="btn" id="start-btn" style="border-color: var(--danger); color: var(--danger);" onclick="startGame()">RUN PROTOTYPE 1</button>
                 </div>
                 
-                <button class="btn" style="border-color:#444; color:#666; margin-top:40px; width: 150px;" onclick="location.reload()">TERMINATE SESSION</button>
+                <button class="btn" style="border-color:#444; margin-top:30px; width:150px;" onclick="location.reload()">LOGOUT</button>
             </div>
 
             <div class="section-box">
                 <h3>SECURE COMMS</h3>
                 <div class="msg-log" id="msg-log"></div>
                 <div style="display: flex; gap: 5px;">
-                    <input type="text" id="msg-input" placeholder="Enter message..." style="width: 75%; margin:0;" onkeydown="if(event.key==='Enter')postMsg()">
+                    <input type="text" id="msg-input" placeholder="Type..." style="width: 75%; margin:0;" onkeydown="if(event.key==='Enter')postMsg()">
                     <button class="btn" style="width: 20%; margin:0;" onclick="postMsg()">SEND</button>
                 </div>
             </div>
@@ -233,75 +209,92 @@
     <div id="game-container">
         <div id="score-display">SCORE: 0</div>
         <h2 id="game-status" style="color: #fff; margin:0; letter-spacing: 5px;">ZOMBIE OUTBREAK</h2>
-        <p id="game-subtext" style="color: #888; margin-bottom: 10px;">WASD TO MOVE | SPACE TO FIRE</p>
+        <p id="game-subtext" style="color: #888;">WASD TO MOVE | SPACE TO FIRE | 'R' TO RESTART</p>
         <canvas id="zombieCanvas" width="600" height="450"></canvas>
-        <button class="btn" style="width: 200px; margin-top: 20px;" onclick="closeGame()">CLOSE SIMULATION</button>
+        <button class="btn" style="width: 200px; margin-top: 20px;" onclick="closeGame()">EXIT SIMULATION</button>
     </div>
 
     <script>
         let currentRole = "";
-        
-        // 1. Terminal Access
+        let assignments = [];
+
+        // Authentication
         function checkEntry() {
             if (document.getElementById('entry-code').value === "201400") {
                 document.getElementById('login-screen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'block';
-            } else {
-                alert("ACCESS DENIED: BREACH ATTEMPT LOGGED.");
-            }
+            } else alert("DENIED");
         }
 
-        // 2. Profile Authentication
         function loginProfile(role, pin) {
-            let pass = prompt("Enter Authentication PIN for " + role + ":");
+            let pass = prompt("Enter Security PIN:");
             if (pass === pin) {
                 currentRole = role;
                 document.getElementById('session-ui').style.display = 'grid';
-                document.getElementById('role-status').innerText = role.toUpperCase() + " VERIFIED";
-                document.getElementById('role-status').style.color = (role === 'Founder') ? 'var(--founder-glow)' : 'var(--primary)';
-
-                // Conditional Access
-                document.getElementById('founder-section').style.display = (role === 'Founder') ? 'block' : 'none';
+                document.getElementById('role-status').innerText = role.toUpperCase() + " SESSION ACTIVE";
+                
+                // Show role-specific UI
+                document.getElementById('founder-tools').style.display = (role === 'Founder' || role === 'Co-Founder') ? 'block' : 'none';
                 document.getElementById('game-access').style.display = (role === 'Founder' || role === 'Director') ? 'block' : 'none';
                 
-                logMsg("LOG: Identity " + role + " confirmed. Encrypted link active.");
-            } else {
-                alert("CRITICAL ERROR: PIN INCORRECT.");
+                // Extra Founder-Only buttons
+                document.getElementById('payout-btn').style.display = (role === 'Founder') ? 'block' : 'none';
+
+                logMsg(`User ${role} identity verified.`);
+                updateAssignmentUI();
+            } else alert("INVALID PIN");
+        }
+
+        // Assignment System
+        function createAssignment() {
+            let t = prompt("Define New Assignment:");
+            if(t) {
+                assignments.push({from: currentRole, text: t, time: new Date().toLocaleTimeString()});
+                logMsg(`NEW DIRECTIVE: ${t}`);
+                updateAssignmentUI();
             }
         }
 
-        function toggleEmployeeMenu() {
-            let menu = document.getElementById('profit-controls');
-            menu.style.display = (menu.style.display === 'none') ? 'block' : 'none';
+        function updateAssignmentUI() {
+            let list = document.getElementById('assignment-list');
+            list.innerHTML = assignments.length ? "" : "No pending directives.";
+            assignments.forEach(a => {
+                list.innerHTML += `<div style="border-bottom:1px solid #222; padding:8px 0;">
+                    <span style="color:var(--primary)">[${a.from}]</span>: ${a.text} 
+                    <div style="font-size:9px; color:#555;">Assigned at ${a.time}</div>
+                </div>`;
+            });
         }
 
-        function processPayment() {
-            let n = document.getElementById('emp-name').value;
-            let a = document.getElementById('emp-amount').value;
-            if(n && a) {
-                logMsg("TRANSFER: Authorized $" + a + " credit to agent: " + n);
-                document.getElementById('emp-name').value = ""; 
-                document.getElementById('emp-amount').value = "";
-                document.getElementById('profit-controls').style.display = 'none';
-                alert("Funds Dispatched.");
+        // Payout System
+        function togglePayoutMenu() {
+            let m = document.getElementById('payout-menu');
+            m.style.display = (m.style.display === 'none') ? 'block' : 'none';
+        }
+
+        function execPayout() {
+            let n = document.getElementById('payout-name').value;
+            let v = document.getElementById('payout-val').value;
+            if(n && v) {
+                logMsg(`FINANCE: Authorized $${v} payout to ${n}.`);
+                alert("Transaction Authorized.");
+                togglePayoutMenu();
             }
         }
 
+        // Messaging
         function postMsg() {
             let i = document.getElementById('msg-input');
-            if (i.value) { 
-                logMsg(currentRole + ": " + i.value); 
-                i.value = ""; 
-            }
+            if (i.value) { logMsg(`${currentRole}: ${i.value}`); i.value = ""; }
         }
 
         function logMsg(t) {
             let l = document.getElementById('msg-log');
-            l.innerHTML += "<div>[ " + new Date().toLocaleTimeString() + " ] " + t + "</div>";
+            l.innerHTML += `<div>> ${t}</div>`;
             l.scrollTop = l.scrollHeight;
         }
 
-        // --- GAME ENGINE: PROTOTYPE 1 ---
+        // --- GAME ENGINE ---
         const canvas = document.getElementById('zombieCanvas');
         const ctx = canvas.getContext('2d');
         let gameRunning = false, isDead = false, score = 0;
@@ -309,17 +302,14 @@
         let zombies = [], bullets = [], keys = {};
 
         window.addEventListener('keydown', e => {
-            // Prevent scrolling or button-clicking while in game
-            if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
-                e.preventDefault();
-            }
+            if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
             keys[e.code] = true;
             if (isDead && e.code === 'KeyR') resetGame();
         });
         window.addEventListener('keyup', e => keys[e.code] = false);
 
         function startGame() {
-            document.getElementById('start-game-btn').blur(); // Stop spacebar from re-triggering button
+            document.getElementById('start-btn').blur(); // Essential: prevents spacebar from re-clicking button
             document.getElementById('game-container').style.display = 'flex';
             resetGame();
         }
@@ -331,76 +321,46 @@
             player = { x: 290, y: 380, w: 20, h: 25, speed: 5 };
             document.getElementById('game-status').innerText = "ZOMBIE OUTBREAK";
             document.getElementById('game-status').style.color = "#fff";
-            document.getElementById('game-subtext').innerText = "WASD TO MOVE | SPACE TO FIRE";
             requestAnimationFrame(gameLoop);
         }
 
         function closeGame() { gameRunning = false; document.getElementById('game-container').style.display = 'none'; }
 
-        function triggerDeath(reason) {
-            gameRunning = false; isDead = true;
-            document.getElementById('game-status').innerText = "YOU DIED: " + reason;
-            document.getElementById('game-status').style.color = "var(--danger)";
-            document.getElementById('game-subtext').innerText = "PRESS 'R' TO RESTART SYSTEM";
-        }
-
         function gameLoop() {
             if (!gameRunning) return;
             ctx.fillStyle = "black"; ctx.fillRect(0,0,600,450);
 
-            // Controls
             if ((keys['ArrowLeft'] || keys['KeyA']) && player.x > 0) player.x -= player.speed;
             if ((keys['ArrowRight'] || keys['KeyD']) && player.x < 580) player.x += player.speed;
             if ((keys['ArrowUp'] || keys['KeyW']) && player.y > 150) player.y -= player.speed;
             if ((keys['ArrowDown'] || keys['KeyS']) && player.y < 420) player.y += player.speed;
 
-            // Combat
-            if (keys['Space']) {
-                if (bullets.length === 0 || bullets[bullets.length-1].y < player.y - 50) {
-                    bullets.push({x: player.x + 8, y: player.y, w: 4, h: 12});
-                }
+            if (keys['Space'] && (bullets.length === 0 || bullets[bullets.length-1].y < player.y - 50)) {
+                bullets.push({x: player.x + 8, y: player.y, w: 4, h: 12});
             }
 
-            // Draw Survivor (White Box)
-            ctx.fillStyle = "white"; 
-            ctx.fillRect(player.x, player.y, player.w, player.h);
+            ctx.fillStyle = "white"; ctx.fillRect(player.x, player.y, player.w, player.h);
 
-            // Bullet Physics
             bullets.forEach((b, bi) => {
-                b.y -= 8;
-                ctx.fillStyle = "cyan"; ctx.fillRect(b.x, b.y, b.w, b.h);
+                b.y -= 8; ctx.fillStyle = "cyan"; ctx.fillRect(b.x, b.y, b.w, b.h);
                 if (b.y < 0) bullets.splice(bi, 1);
             });
 
-            // Zombie Horde Logic
-            if (Math.random() < 0.015) {
-                zombies.push({x: Math.random()*580, y: -20, w: 22, h: 22});
-            }
-            
+            if (Math.random() < 0.02) zombies.push({x: Math.random()*580, y: -20, w: 22, h: 22});
             zombies.forEach((z, zi) => {
-                z.y += 1.5; // Speed of zombies
-                ctx.fillStyle = "#39ff14"; 
-                ctx.fillRect(z.x, z.y, z.w, z.h);
-
-                // Collision Detection: Bullet hits Zombie
+                z.y += 1.6; ctx.fillStyle = "#39ff14"; ctx.fillRect(z.x, z.y, z.w, z.h);
                 bullets.forEach((b, bi) => {
                     if (b.x < z.x + z.w && b.x + b.w > z.x && b.y < z.y + z.h && b.y + b.h > z.y) {
-                        zombies.splice(zi, 1); 
-                        bullets.splice(bi, 1);
-                        score += 100;
-                        document.getElementById('score-display').innerText = "SCORE: " + score;
+                        zombies.splice(zi, 1); bullets.splice(bi, 1);
+                        score += 100; document.getElementById('score-display').innerText = "SCORE: " + score;
                     }
                 });
-
-                // Collision Detection: Zombie hits Player
-                if (z.x < player.x + player.w && z.x + z.w > player.x && z.y < player.y + player.h && z.y + z.h > player.y) {
-                    triggerDeath("INFECTED");
+                if (z.y > 440 || (z.x < player.x + player.w && z.x + z.w > player.x && z.y < player.y + player.h && z.y + z.h > player.y)) {
+                    gameRunning = false; isDead = true;
+                    document.getElementById('game-status').innerText = "UNIT LOST";
+                    document.getElementById('game-status').style.color = "red";
                 }
-                
-                // Breach Check
-                if (z.y > 440) triggerDeath("BASE BREACHED");
             });
-
             requestAnimationFrame(gameLoop);
         }
     </script>
