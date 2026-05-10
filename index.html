@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #020205; --glass: rgba(15, 15, 25, 0.85);
+            --bg: #020205; --glass: rgba(15, 15, 25, 0.9);
             --purple: #9d4edd; --green: #ccff00; --border: rgba(157, 78, 221, 0.3);
         }
 
@@ -17,18 +17,25 @@
             color: white; font-family: 'Inter', sans-serif; height: 100vh; overflow: hidden; 
         }
 
-        /* --- 1. GATEWAY --- */
-        #gateway {
+        /* --- 1. GATEWAY & OVERLAYS --- */
+        #gateway, #pin-overlay {
             display: flex; flex-direction: column; align-items: center; justify-content: center;
             height: 100vh; position: fixed; width: 100%; z-index: 100; background: #000;
         }
+        #pin-overlay { display: none; background: rgba(0,0,0,0.85); backdrop-filter: blur(10px); z-index: 110; }
+        
         .gate-card {
             padding: 50px; border: 1px solid var(--purple); background: var(--glass);
-            border-radius: 24px; text-align: center;
+            border-radius: 24px; text-align: center; display: flex; flex-direction: column; align-items: center;
+        }
+        .entry-logo { 
+            width: 100px; height: 100px; margin-bottom: 25px; 
+            border: 2px solid var(--purple); border-radius: 15px; 
+            box-shadow: 0 0 20px rgba(157, 78, 221, 0.4); object-fit: cover;
         }
         input.main-input { 
             background: rgba(0,0,0,0.6); border: 1px solid var(--purple); color: white; 
-            padding: 15px; width: 280px; text-align: center; border-radius: 8px; outline: none;
+            padding: 15px; width: 280px; text-align: center; border-radius: 8px; outline: none; font-size: 1.1em;
         }
 
         /* --- 2. HUB SELECTOR --- */
@@ -69,25 +76,25 @@
             padding: 40px; text-align: left; transition: 0.3s;
         }
 
-        /* --- FUNCTIONAL BOXES --- */
-        .data-list { background: #000; border-radius: 12px; padding: 15px; margin-bottom: 15px; height: 200px; overflow-y: auto; font-family: monospace; border: 1px solid #111; }
+        /* --- FUNCTIONAL ELEMENTS --- */
+        .data-list { background: #000; border-radius: 12px; padding: 15px; margin-bottom: 15px; height: 250px; overflow-y: auto; font-family: monospace; border: 1px solid #111; }
         .task-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #111; }
         .del-btn { color: #ff4d4d; cursor: pointer; font-size: 10px; border: 1px solid #ff4d4d; padding: 2px 5px; border-radius: 4px; }
 
         .action-btn {
             background: transparent; border: 1px solid var(--purple); color: var(--purple);
-            padding: 10px 20px; border-radius: 100px; font-weight: 700; cursor: pointer; font-size: 11px;
+            padding: 10px 20px; border-radius: 100px; font-weight: 700; cursor: pointer; font-size: 11px; text-transform: uppercase;
         }
         .action-btn:hover { background: var(--purple); color: white; }
 
-        /* Prototype Simulation Screen */
-        #simulation-screen { background: #000; color: var(--green); font-family: monospace; padding: 20px; border-radius: 15px; display: none; }
+        #simulation-screen { background: #000; color: var(--green); font-family: monospace; padding: 20px; border-radius: 15px; height: 300px; overflow-y: auto; border: 1px solid var(--green); }
     </style>
 </head>
 <body>
 
     <div id="gateway">
         <div class="gate-card">
+            <img src="logo.png" alt="Netlink Logo" class="entry-logo" onerror="this.src='https://cdn-icons-png.flaticon.com/512/606/606547.png'">
             <h2 style="letter-spacing: 2px; margin-bottom: 25px;">NETLINK ENTERPRISE</h2>
             <input type="password" id="gate-input" class="main-input" placeholder="SYSTEM CODE" autofocus>
             <br><br>
@@ -95,12 +102,24 @@
         </div>
     </div>
 
+    <div id="pin-overlay">
+        <div class="gate-card">
+            <h3 id="pin-title" style="margin-bottom: 20px; color: var(--purple);">SECURE LOGIN</h3>
+            <input type="password" id="pin-input" class="main-input" placeholder="ENTER NODE PIN">
+            <br><br>
+            <div style="display: flex; gap: 10px;">
+                <button class="action-btn" onclick="verifyPin()">VERIFY</button>
+                <button class="action-btn" style="border-color: #444; color: #444;" onclick="document.getElementById('pin-overlay').style.display='none'">CANCEL</button>
+            </div>
+        </div>
+    </div>
+
     <div id="hub-ui">
         <h2 style="margin-bottom: 40px; letter-spacing: 5px;">SELECT NODE</h2>
         <div class="hub-grid">
-            <div class="hub-btn" onclick="checkPin('founder')"><h4>MANAV</h4><h3>FOUNDER</h3></div>
-            <div class="hub-btn" onclick="checkPin('director')"><h4>COLTON</h4><h3>DIRECTOR</h3></div>
-            <div class="hub-btn" onclick="checkPin('cofounder')"><h4>KESHAV</h4><h3>CO-FOUNDER</h3></div>
+            <div class="hub-btn" onclick="openPinGate('founder')"><h4>MANAV</h4><h3>FOUNDER</h3></div>
+            <div class="hub-btn" onclick="openPinGate('director')"><h4>COLTON</h4><h3>DIRECTOR</h3></div>
+            <div class="hub-btn" onclick="openPinGate('cofounder')"><h4>KESHAV</h4><h3>CO-FOUNDER</h3></div>
             <div class="hub-btn" onclick="enterEmployee()"><h4>TEAM</h4><h3>EMPLOYEE</h3></div>
         </div>
     </div>
@@ -149,12 +168,9 @@
 
                 <div id="game-view" class="view-section">
                     <h1 class="main-title" style="color:var(--green)">Prototype 1</h1>
-                    <div id="simulation-screen" style="display:block;">
-                        [SYSTEM]: Initializing Zombie Simulation...<br>
-                        [LOG]: Loading movement vectors...<br>
-                        [LOG]: Spawning prototype assets...<br><br>
-                        <button class="action-btn" style="border-color:var(--green); color:var(--green)">RUN ENGINE</button>
-                    </div>
+                    <div id="simulation-screen">[SYSTEM]: Prototype Engine Offline.</div>
+                    <br>
+                    <button class="action-btn" id="run-engine-btn" style="border-color:var(--green); color:var(--green)" onclick="runEngine()">RUN ENGINE</button>
                 </div>
             </main>
         </div>
@@ -167,6 +183,7 @@
             cofounder: { pin: "444444", name: "Keshav", role: "CO-FOUNDER", admin: true, game: false }
         };
         let currentUser = null;
+        let pendingRole = null;
 
         function checkGate() {
             if(document.getElementById('gate-input').value === "netlink2026") {
@@ -175,9 +192,25 @@
             } else { alert("DENIED"); }
         }
 
-        function checkPin(key) {
-            const pin = prompt(`PIN for ${key.toUpperCase()}:`);
-            if(pin === ROLES[key].pin) { currentUser = ROLES[key]; launch(); }
+        // NEW: Handles the custom PIN screen
+        function openPinGate(key) {
+            pendingRole = key;
+            document.getElementById('pin-title').innerText = `LOGIN: ${key.toUpperCase()}`;
+            document.getElementById('pin-input').value = "";
+            document.getElementById('pin-overlay').style.display = 'flex';
+            document.getElementById('pin-input').focus();
+        }
+
+        function verifyPin() {
+            const input = document.getElementById('pin-input').value;
+            if(input === ROLES[pendingRole].pin) {
+                currentUser = ROLES[pendingRole];
+                document.getElementById('pin-overlay').style.display = 'none';
+                launch();
+            } else {
+                alert("INVALID PIN");
+                document.getElementById('pin-input').value = "";
+            }
         }
 
         function enterEmployee() {
@@ -222,7 +255,22 @@
             }
         }
 
+        function runEngine() {
+            const screen = document.getElementById('simulation-screen');
+            const btn = document.getElementById('run-engine-btn');
+            btn.style.display = 'none';
+            screen.innerHTML = "[SYSTEM]: INITIALIZING BOOT SEQUENCE...<br>";
+            const logs = ["Loading Neural Network...", "Calibrating Movement...", "Syncing Hardware...", "SIMULATION ACTIVE."];
+            let i = 0;
+            const interval = setInterval(() => {
+                if(i < logs.length) { screen.innerHTML += `[LOG]: ${logs[i]}<br>`; i++; }
+                else { clearInterval(interval); screen.innerHTML += "<br>*** ENGINE 100% ***"; }
+            }, 600);
+        }
+
+        // KEY LISTENERS
         document.getElementById('gate-input').addEventListener('keypress', (e) => { if(e.key==='Enter') checkGate(); });
+        document.getElementById('pin-input').addEventListener('keypress', (e) => { if(e.key==='Enter') verifyPin(); });
     </script>
 </body>
 </html>
