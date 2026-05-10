@@ -3,366 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlink-Enterprise | Tactical Terminal v5.0</title>
+    <title>Netlink-Enterprise | Management System</title>
     <style>
         :root {
-            --primary: #00ffcc; 
-            --accent-blue: #0072ff;
-            --founder-glow: #00d9ff; 
-            --cofounder-glow: #ff00ff; 
-            --bg-dark: #050505;
-            --danger: #ff4444;
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
         }
 
-        body {
-            background-color: var(--bg-dark);
-            color: white;
-            font-family: 'Segoe UI', Tahoma, sans-serif;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            overflow: hidden;
-        }
-
-        /* --- LOGO --- */
-        .company-logo {
-            width: 280px;
-            height: auto;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 15px rgba(0, 255, 204, 0.3));
-        }
-
-        /* --- LOGIN SCREEN --- */
-        #login-screen {
-            margin-top: 50px;
-            text-align: center;
-            background: rgba(15, 15, 15, 0.95);
-            padding: 50px;
-            border: 1px solid var(--primary);
-            box-shadow: 0 0 30px rgba(0, 255, 204, 0.1);
-            border-radius: 12px;
-        }
-
-        input {
-            background: #000;
-            border: 1px solid #333;
-            color: var(--primary);
-            padding: 14px;
-            margin: 10px 0;
-            text-align: center;
-            outline: none;
-            width: 250px;
-            font-family: 'Courier New', monospace;
-            border-radius: 4px;
-        }
-
-        /* --- DASHBOARD --- */
-        #dashboard { display: none; width: 95%; max-width: 1200px; padding: 20px; }
-        .profile-container { display: flex; gap: 20px; justify-content: center; margin-bottom: 30px; }
+        body { font-family: 'Segoe UI', Tahoma, sans-serif; background: var(--bg); margin: 0; padding: 20px; }
         
-        .card { 
-            background: #111; 
-            border: 1px solid #222; 
-            padding: 20px; 
-            width: 220px; 
-            text-align: center; 
-            border-radius: 8px;
-            transition: transform 0.2s;
-        }
-        .card:hover { transform: translateY(-5px); border-color: var(--primary); }
-
-        .active-session { 
-            display: none; 
-            grid-template-columns: 1fr 1fr; 
-            gap: 25px; 
-            margin-top: 20px; 
-            border-top: 1px solid #333; 
-            padding-top: 20px; 
+        /* Login Screen */
+        #login-screen {
+            max-width: 400px;
+            margin: 100px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
         }
 
-        .section-box { 
-            background: #0a0a0a; 
-            border: 1px solid #333; 
-            padding: 25px; 
-            min-height: 450px; 
-            border-radius: 8px;
-        }
-
-        .btn {
-            background: transparent;
-            border: 1px solid var(--primary);
-            color: var(--primary);
-            padding: 12px;
-            cursor: pointer;
+        input[type="password"] {
             width: 100%;
-            margin-top: 10px;
+            padding: 12px;
+            margin: 20px 0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-sizing: border-box;
+        }
+
+        /* Main Dashboard */
+        #main-app { display: none; max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; }
+
+        header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--secondary); margin-bottom: 20px; }
+
+        .nav-bar { display: flex; gap: 10px; margin-bottom: 20px; }
+
+        button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
             font-weight: bold;
-            text-transform: uppercase;
             transition: 0.3s;
-            border-radius: 4px;
-        }
-        .btn:hover { background: var(--primary); color: black; box-shadow: 0 0 10px var(--primary); }
-
-        /* --- LOGS & ASSIGNMENTS --- */
-        .msg-log, #assignment-list {
-            background: #000;
-            height: 220px;
-            overflow-y: auto;
-            padding: 15px;
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            border: 1px solid #222;
-            color: #00ff00;
-            margin-bottom: 10px;
-            border-radius: 4px;
         }
 
-        .role-badge {
-            background: #1a1a1a;
-            padding: 6px 12px;
-            font-size: 11px;
-            letter-spacing: 2px;
-            border-radius: 4px;
-            margin-bottom: 15px;
-            display: inline-block;
-            border: 1px solid #333;
+        .btn-nav { background: var(--primary); color: white; }
+        .btn-nav:hover { background: var(--secondary); }
+
+        .module { display: none; animation: fadeIn 0.3s ease-in; }
+
+        /* Drawing Canvas */
+        #blueprintCanvas {
+            background: #fff;
+            border: 2px dashed #bdc3c7;
+            cursor: crosshair;
+            display: block;
+            margin-top: 15px;
         }
 
-        /* --- GAME --- */
-        #game-container {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.98);
-            z-index: 1000;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-        canvas { background: #000; border: 4px solid #222; }
-        #score-display { position: absolute; top: 30px; right: 50px; font-size: 28px; color: var(--primary); font-family: 'Courier New', monospace; }
+        /* Financials (Founder Only) */
+        .founder-only { background: #fff3cd; padding: 15px; border-radius: 8px; border: 1px solid #ffeeba; }
+
+        /* Assignments */
+        .task-card { background: #f9f9f9; padding: 15px; margin: 10px 0; border-left: 5px solid var(--secondary); border-radius: 4px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
     </style>
 </head>
 <body>
 
+    <!-- SECTION 1: LOGIN -->
     <div id="login-screen">
-        <img src="logo.png" alt="Netlink Logo" class="company-logo" onerror="this.style.display='none';">
-        <h1 style="letter-spacing: 8px; color: var(--primary);">SYSTEM ACCESS</h1>
-        <input type="password" id="entry-code" placeholder="ENCRYPTED CODE" onkeydown="if(event.key==='Enter')checkEntry()">
-        <button class="btn" onclick="checkEntry()">INITIALIZE</button>
+        <h1>Netlink-Enterprise</h1>
+        <p>Enter Access Key</p>
+        <input type="password" id="passkey" placeholder="••••••••">
+        <button class="btn-nav" style="width: 100%;" onclick="checkLogin()">Enter Gateway</button>
     </div>
 
-    <div id="dashboard">
-        <div class="profile-container">
-            <div class="card" style="border-color: var(--founder-glow)">
-                <button class="btn" onclick="loginProfile('Founder', '314314')">LOGIN</button>
-                <p>Manav Bisht</p>
-            </div>
-            <div class="card" style="border-color: var(--cofounder-glow)">
-                <button class="btn" onclick="loginProfile('Co-Founder', '444444')">LOGIN</button>
-                <p>Keshav</p>
-            </div>
-            <div class="card">
-                <button class="btn" onclick="loginProfile('Director', '55555')">LOGIN</button>
-                <p>Colton</p>
+    <!-- SECTION 2: MAIN APPLICATION -->
+    <div id="main-app">
+        <header>
+            <h2 id="portal-title">Project Dashboard</h2>
+            <button onclick="logout()" style="background:var(--danger); color:white;">Logout</button>
+        </header>
+
+        <div class="nav-bar" id="nav-container">
+            <!-- Navigation buttons will be injected based on role -->
+        </div>
+
+        <hr>
+
+        <!-- MODULE: BLUEPRINTS (Everyone) -->
+        <div id="draw" class="module">
+            <h3>Blueprint Designer</h3>
+            <canvas id="blueprintCanvas" width="800" height="450"></canvas>
+            <div style="margin-top:10px;">
+                <button onclick="clearCanvas()" style="background:var(--danger); color:white;">Clear</button>
+                <button onclick="submitBlueprint()" style="background:var(--success); color:white;">Submit to Founder</button>
             </div>
         </div>
 
-        <div id="session-ui" class="active-session">
-            <div class="section-box">
-                <div id="role-status" class="role-badge">UNAUTHORIZED</div>
-                
-                <h3 style="color: var(--primary);">ACTIVE ASSIGNMENTS</h3>
-                <div id="assignment-list">No pending directives found.</div>
+        <!-- MODULE: ASSIGNMENTS (Everyone) -->
+        <div id="tasks" class="module">
+            <h3>Active Project Tasks</h3>
+            <div class="task-card"><strong>Hardware:</strong> Check TB6612FNG wiring for Raspberry Pi 4.</div>
+            <div class="task-card"><strong>Game Dev:</strong> Fix spacebar restart bug in Prototype 1.</div>
+            <div class="task-card"><strong>Design:</strong> 3D print the GBA SP clamshell prototype.</div>
+        </div>
 
-                <div id="founder-tools" style="display:none; margin-top: 20px;">
-                    <button class="btn" style="border-color: #ffd700; color: #ffd700;" onclick="createAssignment()">NEW DIRECTIVE</button>
-                    <button class="btn" style="border-color: #ffd700; color: #ffd700;" id="payout-btn" onclick="togglePayoutMenu()">PAYOUTS</button>
-                    
-                    <div id="payout-menu" style="display:none; margin-top:10px; border:1px solid #333; padding:10px;">
-                        <input type="text" id="payout-name" placeholder="Name" style="width: 80%;">
-                        <input type="number" id="payout-val" placeholder="Amount" style="width: 80%;">
-                        <button class="btn" onclick="execPayout()">SEND FUNDS</button>
-                    </div>
-                </div>
-
-                <div id="game-access" style="display:none;">
-                    <button class="btn" id="start-btn" style="border-color: var(--danger); color: var(--danger);" onclick="startGame()">RUN PROTOTYPE 1</button>
-                </div>
-                
-                <button class="btn" style="border-color:#444; margin-top:30px; width:150px;" onclick="location.reload()">LOGOUT</button>
-            </div>
-
-            <div class="section-box">
-                <h3>SECURE COMMS</h3>
-                <div class="msg-log" id="msg-log"></div>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" id="msg-input" placeholder="Type..." style="width: 75%; margin:0;" onkeydown="if(event.key==='Enter')postMsg()">
-                    <button class="btn" style="width: 20%; margin:0;" onclick="postMsg()">SEND</button>
-                </div>
+        <!-- MODULE: FINANCIALS (Founder Only) -->
+        <div id="finance" class="module">
+            <h3>Financial Management</h3>
+            <div class="founder-only">
+                <p><strong>Project Budget:</strong> $1,250.00</p>
+                <p><strong>Hardware Costs:</strong> -$432.10</p>
+                <p><strong>Remaining:</strong> $817.90</p>
             </div>
         </div>
-    </div>
-
-    <div id="game-container">
-        <div id="score-display">SCORE: 0</div>
-        <h2 id="game-status" style="color: #fff; margin:0; letter-spacing: 5px;">ZOMBIE OUTBREAK</h2>
-        <p id="game-subtext" style="color: #888;">WASD TO MOVE | SPACE TO FIRE | 'R' TO RESTART</p>
-        <canvas id="zombieCanvas" width="600" height="450"></canvas>
-        <button class="btn" style="width: 200px; margin-top: 20px;" onclick="closeGame()">EXIT SIMULATION</button>
     </div>
 
     <script>
         let currentRole = "";
-        let assignments = [];
 
-        // Authentication
-        function checkEntry() {
-            if (document.getElementById('entry-code').value === "201400") {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('dashboard').style.display = 'block';
-            } else alert("DENIED");
-        }
+        function checkLogin() {
+            const key = document.getElementById('passkey').value;
+            const app = document.getElementById('main-app');
+            const login = document.getElementById('login-screen');
+            const nav = document.getElementById('nav-container');
 
-        function loginProfile(role, pin) {
-            let pass = prompt("Enter Security PIN:");
-            if (pass === pin) {
-                currentRole = role;
-                document.getElementById('session-ui').style.display = 'grid';
-                document.getElementById('role-status').innerText = role.toUpperCase() + " SESSION ACTIVE";
-                
-                // Show role-specific UI
-                document.getElementById('founder-tools').style.display = (role === 'Founder' || role === 'Co-Founder') ? 'block' : 'none';
-                document.getElementById('game-access').style.display = (role === 'Founder' || role === 'Director') ? 'block' : 'none';
-                
-                // Extra Founder-Only buttons
-                document.getElementById('payout-btn').style.display = (role === 'Founder') ? 'block' : 'none';
-
-                logMsg(`User ${role} identity verified.`);
-                updateAssignmentUI();
-            } else alert("INVALID PIN");
-        }
-
-        // Assignment System
-        function createAssignment() {
-            let t = prompt("Define New Assignment:");
-            if(t) {
-                assignments.push({from: currentRole, text: t, time: new Date().toLocaleTimeString()});
-                logMsg(`NEW DIRECTIVE: ${t}`);
-                updateAssignmentUI();
+            if (key === "admin123") { // Password for Manav
+                currentRole = "Founder";
+                setupFounderUI(nav);
+                login.style.display = "none";
+                app.style.display = "block";
+                openModule('tasks');
+            } else if (key === "team456") { // Password for Keshav, Colton, Agastya
+                currentRole = "Employee";
+                setupEmployeeUI(nav);
+                login.style.display = "none";
+                app.style.display = "block";
+                openModule('tasks');
+            } else {
+                alert("Access Denied: Invalid Key");
             }
         }
 
-        function updateAssignmentUI() {
-            let list = document.getElementById('assignment-list');
-            list.innerHTML = assignments.length ? "" : "No pending directives.";
-            assignments.forEach(a => {
-                list.innerHTML += `<div style="border-bottom:1px solid #222; padding:8px 0;">
-                    <span style="color:var(--primary)">[${a.from}]</span>: ${a.text} 
-                    <div style="font-size:9px; color:#555;">Assigned at ${a.time}</div>
-                </div>`;
-            });
+        function setupFounderUI(nav) {
+            document.getElementById('portal-title').innerText = "Founder Portal | Welcome, Manav";
+            nav.innerHTML = `
+                <button class="btn-nav" onclick="openModule('tasks')">Assignments</button>
+                <button class="btn-nav" onclick="openModule('draw')">View Blueprints</button>
+                <button class="btn-nav" onclick="openModule('finance')">Financials</button>
+            `;
         }
 
-        // Payout System
-        function togglePayoutMenu() {
-            let m = document.getElementById('payout-menu');
-            m.style.display = (m.style.display === 'none') ? 'block' : 'none';
+        function setupEmployeeUI(nav) {
+            document.getElementById('portal-title').innerText = "Employee Workspace";
+            nav.innerHTML = `
+                <button class="btn-nav" onclick="openModule('tasks')">My Tasks</button>
+                <button class="btn-nav" onclick="openModule('draw')">Submit Blueprint</button>
+            `;
         }
 
-        function execPayout() {
-            let n = document.getElementById('payout-name').value;
-            let v = document.getElementById('payout-val').value;
-            if(n && v) {
-                logMsg(`FINANCE: Authorized $${v} payout to ${n}.`);
-                alert("Transaction Authorized.");
-                togglePayoutMenu();
-            }
+        function openModule(id) {
+            document.querySelectorAll('.module').forEach(m => m.style.display = 'none');
+            document.getElementById(id).style.display = 'block';
+            if(id === 'draw') initCanvas();
         }
 
-        // Messaging
-        function postMsg() {
-            let i = document.getElementById('msg-input');
-            if (i.value) { logMsg(`${currentRole}: ${i.value}`); i.value = ""; }
+        // CANVAS LOGIC
+        let canvas, ctx, drawing = false;
+
+        function initCanvas() {
+            canvas = document.getElementById('blueprintCanvas');
+            ctx = canvas.getContext('2d');
+            canvas.onmousedown = () => drawing = true;
+            canvas.onmouseup = () => { drawing = false; ctx.beginPath(); };
+            canvas.onmousemove = draw;
         }
 
-        function logMsg(t) {
-            let l = document.getElementById('msg-log');
-            l.innerHTML += `<div>> ${t}</div>`;
-            l.scrollTop = l.scrollHeight;
+        function draw(e) {
+            if (!drawing) return;
+            const rect = canvas.getBoundingClientRect();
+            ctx.lineWidth = 3;
+            ctx.lineCap = 'round';
+            ctx.strokeStyle = '#2c3e50';
+            ctx.lineTo(e.clientX - rect.left, e.clientY - rect.top);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - rect.left, e.clientY - rect.top);
         }
 
-        // --- GAME ENGINE ---
-        const canvas = document.getElementById('zombieCanvas');
-        const ctx = canvas.getContext('2d');
-        let gameRunning = false, isDead = false, score = 0;
-        let player = { x: 290, y: 380, w: 20, h: 25, speed: 5 };
-        let zombies = [], bullets = [], keys = {};
+        function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
-        window.addEventListener('keydown', e => {
-            if(["Space", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) e.preventDefault();
-            keys[e.code] = true;
-            if (isDead && e.code === 'KeyR') resetGame();
-        });
-        window.addEventListener('keyup', e => keys[e.code] = false);
-
-        function startGame() {
-            document.getElementById('start-btn').blur(); // Essential: prevents spacebar from re-clicking button
-            document.getElementById('game-container').style.display = 'flex';
-            resetGame();
+        function submitBlueprint() {
+            alert("Success: Blueprint has been sent to the Founder.");
         }
 
-        function resetGame() {
-            gameRunning = true; isDead = false; score = 0;
-            document.getElementById('score-display').innerText = "SCORE: 0";
-            zombies = []; bullets = [];
-            player = { x: 290, y: 380, w: 20, h: 25, speed: 5 };
-            document.getElementById('game-status').innerText = "ZOMBIE OUTBREAK";
-            document.getElementById('game-status').style.color = "#fff";
-            requestAnimationFrame(gameLoop);
-        }
-
-        function closeGame() { gameRunning = false; document.getElementById('game-container').style.display = 'none'; }
-
-        function gameLoop() {
-            if (!gameRunning) return;
-            ctx.fillStyle = "black"; ctx.fillRect(0,0,600,450);
-
-            if ((keys['ArrowLeft'] || keys['KeyA']) && player.x > 0) player.x -= player.speed;
-            if ((keys['ArrowRight'] || keys['KeyD']) && player.x < 580) player.x += player.speed;
-            if ((keys['ArrowUp'] || keys['KeyW']) && player.y > 150) player.y -= player.speed;
-            if ((keys['ArrowDown'] || keys['KeyS']) && player.y < 420) player.y += player.speed;
-
-            if (keys['Space'] && (bullets.length === 0 || bullets[bullets.length-1].y < player.y - 50)) {
-                bullets.push({x: player.x + 8, y: player.y, w: 4, h: 12});
-            }
-
-            ctx.fillStyle = "white"; ctx.fillRect(player.x, player.y, player.w, player.h);
-
-            bullets.forEach((b, bi) => {
-                b.y -= 8; ctx.fillStyle = "cyan"; ctx.fillRect(b.x, b.y, b.w, b.h);
-                if (b.y < 0) bullets.splice(bi, 1);
-            });
-
-            if (Math.random() < 0.02) zombies.push({x: Math.random()*580, y: -20, w: 22, h: 22});
-            zombies.forEach((z, zi) => {
-                z.y += 1.6; ctx.fillStyle = "#39ff14"; ctx.fillRect(z.x, z.y, z.w, z.h);
-                bullets.forEach((b, bi) => {
-                    if (b.x < z.x + z.w && b.x + b.w > z.x && b.y < z.y + z.h && b.y + b.h > z.y) {
-                        zombies.splice(zi, 1); bullets.splice(bi, 1);
-                        score += 100; document.getElementById('score-display').innerText = "SCORE: " + score;
-                    }
-                });
-                if (z.y > 440 || (z.x < player.x + player.w && z.x + z.w > player.x && z.y < player.y + player.h && z.y + z.h > player.y)) {
-                    gameRunning = false; isDead = true;
-                    document.getElementById('game-status').innerText = "UNIT LOST";
-                    document.getElementById('game-status').style.color = "red";
-                }
-            });
-            requestAnimationFrame(gameLoop);
-        }
+        function logout() { location.reload(); }
     </script>
 </body>
 </html>
