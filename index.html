@@ -7,150 +7,39 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg: #0b0a14; 
-            --purple: #9d4edd; 
-            --border: rgba(157, 78, 221, 0.4); 
-            --green: #ccff00;
+            --bg: #0b0a14; --purple: #9d4edd; --border: rgba(157, 78, 221, 0.4); --green: #ccff00;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            height: 100vh; 
-            overflow: hidden; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-        }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; height: 100vh; overflow: hidden; display: flex; align-items: center; justify-content: center; }
 
-        /* --- GATEWAY LAYER --- */
-        #gateway { 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            width: 100%; 
-            position: absolute; 
-            z-index: 100; 
-            background: var(--bg);
-            height: 100vh;
-            justify-content: center;
-        }
-        .gate-card { 
-            width: 100%; 
-            max-width: 550px; 
-            padding: 40px; 
-            text-align: center; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-        .entry-logo { 
-            width: 160px; 
-            height: 160px; 
-            margin-bottom: 40px; 
-            background: white; 
-            border-radius: 35px; 
-            padding: 15px; 
-            box-shadow: 0 0 30px rgba(157, 78, 221, 0.5); 
-            object-fit: contain; 
-        }
-        h2 { font-size: 38px; letter-spacing: 4px; font-weight: 700; margin-bottom: 40px; text-transform: uppercase; }
-
-        .input-group { width: 100%; max-width: 400px; display: flex; flex-direction: column; gap: 20px; }
-        input.main-input { 
-            background: rgba(0, 0, 0, 0.6); 
-            border: 2px solid var(--border); 
-            color: white; 
-            padding: 20px; 
-            width: 100%; 
-            text-align: center; 
-            border-radius: 15px; 
-            outline: none; 
-            font-size: 22px; 
-        }
+        /* --- GATEWAY --- */
+        #gateway { display: flex; flex-direction: column; align-items: center; width: 100%; position: absolute; z-index: 100; background: var(--bg); height: 100vh; justify-content: center; }
+        .gate-card { width: 100%; max-width: 550px; text-align: center; }
+        .entry-logo { width: 160px; height: 160px; margin-bottom: 40px; background: white; border-radius: 35px; padding: 15px; box-shadow: 0 0 30px rgba(157, 78, 221, 0.5); object-fit: contain; }
         
-        .action-btn { 
-            background: transparent; 
-            border: 2px solid var(--purple); 
-            color: #b392f0; 
-            padding: 15px 40px; 
-            border-radius: 100px; 
-            font-weight: 700; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            transition: 0.3s; 
-        }
-        .action-btn:hover { background: var(--purple); color: white; box-shadow: 0 0 20px var(--purple); }
+        /* --- HUB --- */
+        #hub-ui { display: none; flex-direction: column; align-items: center; justify-content: center; height: 100vh; width: 100vw; position: absolute; z-index: 90; background: var(--bg); }
+        .node-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; width: 100%; max-width: 600px; padding: 20px; }
 
-        /* --- HUB LAYER --- */
-        #hub-ui { 
-            display: none; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            width: 100vw; 
-            position: absolute; 
-            z-index: 90;
-            background: var(--bg);
-        }
-
-        /* --- DASHBOARD LAYER --- */
-        #main-ui { 
-            display: none; 
-            flex-direction: row; 
-            height: 100vh; 
-            width: 100vw; 
-            position: absolute; 
-            top:0; left:0; 
-        }
-        
-        aside { 
-            width: 90px; 
-            border-right: 1px solid var(--border); 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            padding-top: 30px; 
-            gap: 25px; 
-            background: rgba(0,0,0,0.4);
-        }
-        .nav-icon { 
-            width: 55px; 
-            height: 55px; 
-            border-radius: 15px; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 22px; 
-            color: #444; 
-            cursor: pointer; 
-            transition: 0.3s;
-        }
+        /* --- DASHBOARD --- */
+        #main-ui { display: none; flex-direction: row; height: 100vh; width: 100vw; position: absolute; top:0; left:0; }
+        aside { width: 90px; border-right: 1px solid var(--border); display: flex; flex-direction: column; align-items: center; padding-top: 30px; gap: 25px; background: rgba(0,0,0,0.4); }
+        .nav-icon { width: 55px; height: 55px; border-radius: 15px; display: flex; align-items: center; justify-content: center; font-size: 22px; color: #444; cursor: pointer; transition: 0.3s; }
         .nav-icon.active { background: var(--purple); color: white; box-shadow: 0 0 15px var(--purple); }
         
         main { flex-grow: 1; padding: 40px; overflow: auto; background: radial-gradient(circle at top right, #151321, #0b0a14); }
         .view-section { display: none; }
         .view-section.active { display: block; animation: fadeIn 0.4s ease; }
+        
+        .action-btn { background: transparent; border: 2px solid var(--purple); color: #b392f0; padding: 15px; border-radius: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s; width: 100%; }
+        .action-btn:hover { background: var(--purple); color: white; box-shadow: 0 0 15px var(--purple); }
+        
+        .finance-card { background: rgba(255, 0, 0, 0.1); border: 1px solid #ff4444; padding: 20px; border-radius: 15px; margin-top: 20px; display: none; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        /* --- GAME COMPONENTS --- */
         #game-container { position: relative; margin: 0 auto; width: 800px; display: none; }
-        #gameCanvas { background: #050505; border: 3px solid var(--green); border-radius: 15px; display: block; }
-        #game-hud { 
-            position: absolute; top: 20px; left: 20px; 
-            color: var(--green); font-family: monospace; font-size: 22px; 
-            text-shadow: 2px 2px black; pointer-events: none; 
-        }
-        #simulation-screen { 
-            background: #000; color: var(--green); 
-            font-family: 'Courier New', Courier, monospace; 
-            padding: 25px; border-radius: 15px; height: 400px; 
-            border: 1px solid var(--green); overflow-y: auto; 
-        }
+        #gameCanvas { background: #050505; border: 3px solid var(--green); border-radius: 15px; cursor: crosshair; }
+        #game-hud { position: absolute; top: 20px; left: 20px; color: var(--green); font-family: monospace; font-size: 22px; pointer-events: none; }
     </style>
 </head>
 <body>
@@ -159,184 +48,123 @@
         <div class="gate-card">
             <img src="logo.png" class="entry-logo" onerror="this.src='https://i.ibb.co/LzNfX8S/netlink-logo.png'">
             <h2>Netlink Enterprise</h2>
-            <div class="input-group">
-                <input type="password" id="gate-input" class="main-input" placeholder="SYSTEM CODE" autofocus>
-                <button class="action-btn" onclick="checkGate()">Access System</button>
-            </div>
+            <input type="password" id="gate-input" style="background:rgba(0,0,0,0.5); border:2px solid var(--border); color:white; padding:20px; border-radius:15px; width:300px; text-align:center; font-size:20px; margin-bottom:20px;" placeholder="SYSTEM CODE">
+            <br>
+            <button class="action-btn" style="width:200px" onclick="checkGate()">Access</button>
         </div>
     </div>
 
     <div id="hub-ui">
-        <h2 style="margin-bottom: 50px; letter-spacing: 8px;">SELECT NODE</h2>
-        <div class="input-group">
-            <button class="action-btn" onclick="launchDashboard('Founder Manav')">Founder Manav</button>
-            <button class="action-btn" style="opacity: 0.6;" onclick="launchDashboard('Guest')">Guest Terminal</button>
+        <h2 style="margin-bottom: 40px; letter-spacing: 5px;">SELECT PERSONNEL</h2>
+        <div class="node-grid">
+            <button class="action-btn" onclick="launch('Manav', 'Founder')">Manav <br><small>Founder</small></button>
+            <button class="action-btn" onclick="launch('Keshav', 'Co-Founder')">Keshav <br><small>Co-Founder</small></button>
+            <button class="action-btn" onclick="launch('Colton', 'Director')">Colton <br><small>Director</small></button>
+            <button class="action-btn" onclick="launch('Agastya', 'Employee')">Agastya <br><small>Employee</small></button>
         </div>
     </div>
 
     <div id="main-ui">
         <aside>
             <div class="nav-icon active" onclick="showView('home', this)"><i class="fa-solid fa-house"></i></div>
-            <div class="nav-icon" id="game-icon" onclick="showView('game-view', this)"><i class="fa-solid fa-crosshairs"></i></div>
-            <div class="nav-icon" onclick="location.reload()" style="margin-top:auto; margin-bottom: 30px;"><i class="fa-solid fa-power-off"></i></div>
+            <div class="nav-icon" onclick="showView('game-view', this)"><i class="fa-solid fa-crosshairs"></i></div>
+            <div class="nav-icon" onclick="location.reload()" style="margin-top:auto; margin-bottom:30px"><i class="fa-solid fa-power-off"></i></div>
         </aside>
         
         <main>
             <div id="home" class="view-section active">
-                <h1 style="font-size:54px; margin-bottom:10px; font-weight: 800;">Control Center</h1>
-                <p id="user-display" style="color: var(--purple); letter-spacing: 2px; margin-bottom: 30px;">USER: AUTHORIZED</p>
-                <div style="padding: 30px; border: 1px solid var(--border); background: rgba(157, 78, 221, 0.05); border-radius: 20px;">
-                    <h3>System Status</h3>
-                    <p style="margin-top: 10px; opacity: 0.7;">Node: Cottleville_Main</p>
-                    <p style="opacity: 0.7;">Network: Encrypted (L2)</p>
+                <h1 id="welcome-msg" style="font-size:48px;">Welcome</h1>
+                <p id="role-tag" style="color:var(--purple); letter-spacing:2px; margin-bottom:30px;"></p>
+                
+                <div id="finance-tool" class="finance-card">
+                    <h3 style="color:#ff4444"><i class="fa-solid fa-vault"></i> FINANCIAL MANAGEMENT</h3>
+                    <p style="margin-top: 10px;">Access Level: FOUNDER ONLY. System funds currently encrypted.</p>
                 </div>
             </div>
 
             <div id="game-view" class="view-section">
-                <h1 style="color:var(--green); margin-bottom:20px; font-weight: 800;">Prototype 1: Combat Engine</h1>
-                <div id="simulation-screen">[SYSTEM]: Engine Ready. Standing by for execution...</div>
-                
+                <h1 style="color:var(--green); margin-bottom:20px">Prototype 1: WASD + Mouse</h1>
                 <div id="game-container">
                     <div id="game-hud">SCORE: 0</div>
                     <canvas id="gameCanvas" width="800" height="500"></canvas>
                 </div>
-
-                <br>
-                <button id="run-engine-btn" class="action-btn" style="border-color:var(--green); color:var(--green)" onclick="runEngine()">Initialize Engine</button>
+                <button id="run-btn" class="action-btn" style="width:200px; border-color:var(--green); color:var(--green); margin-top: 20px;" onclick="runEngine()">Initialize Engine</button>
             </div>
         </main>
     </div>
 
     <script>
-        // --- NAVIGATION LOGIC ---
         function checkGate() {
-            const input = document.getElementById('gate-input').value;
-            if(input === "netlink2026") {
+            if(document.getElementById('gate-input').value === "netlink2026") {
                 document.getElementById('gateway').style.display = 'none';
                 document.getElementById('hub-ui').style.display = 'flex';
-            } else {
-                alert("ACCESS DENIED: INVALID CODE");
-            }
+            } else { alert("INVALID SYSTEM CODE"); }
         }
 
-        function launchDashboard(user) {
+        function launch(name, role) {
             document.getElementById('hub-ui').style.display = 'none';
             document.getElementById('main-ui').style.display = 'flex';
-            document.getElementById('user-display').innerText = `USER: ${user.toUpperCase()}`;
+            document.getElementById('welcome-msg').innerText = `Welcome, ${name}`;
+            document.getElementById('role-tag').innerText = `ACCESS LEVEL: ${role.toUpperCase()}`;
+            
+            // Restricted access check
+            if(role === 'Founder') {
+                document.getElementById('finance-tool').style.display = 'block';
+            } else {
+                document.getElementById('finance-tool').style.display = 'none';
+            }
         }
 
         function showView(id, el) {
             document.querySelectorAll('.view-section').forEach(v => v.classList.remove('active'));
             document.getElementById(id).classList.add('active');
             document.querySelectorAll('.nav-icon').forEach(i => i.classList.remove('active'));
-            if(el) el.classList.add('active');
+            el.classList.add('active');
         }
 
-        // --- GAME ENGINE ---
+        // --- ZOMBIE COMBAT ENGINE ---
         let gameRunning = false;
         const canvas = document.getElementById('gameCanvas');
         const ctx = canvas.getContext('2d');
-        const hud = document.getElementById('game-hud');
-        
         let player = { x: 400, y: 250, size: 30, speed: 5, angle: 0 };
-        let bullets = [], enemies = [], keys = {}, mouse = { x: 0, y: 0 };
-        let score = 0;
+        let bullets = [], enemies = [], keys = {}, mouse = { x: 0, y: 0 }, score = 0;
 
         function runEngine() {
-            document.getElementById('run-engine-btn').style.display = 'none';
-            const screen = document.getElementById('simulation-screen');
-            
-            screen.innerHTML = "[SYSTEM]: Loading Sprites...<br>";
-            setTimeout(() => {
-                screen.innerHTML += "[SYSTEM]: Calibrating WASD Matrix...<br>";
-                setTimeout(() => {
-                    screen.style.display = 'none';
-                    document.getElementById('game-container').style.display = 'block';
-                    initGame();
-                }, 800);
-            }, 800);
-        }
-
-        function initGame() {
+            document.getElementById('run-btn').style.display = 'none';
+            document.getElementById('game-container').style.display = 'block';
             gameRunning = true;
             
-            window.addEventListener('keydown', e => keys[e.code] = true);
-            window.addEventListener('keyup', e => keys[e.code] = false);
-            
-            canvas.addEventListener('mousemove', e => {
+            window.onkeydown = e => keys[e.code] = true;
+            window.onkeyup = e => keys[e.code] = false;
+
+            canvas.onmousemove = e => {
                 const rect = canvas.getBoundingClientRect();
                 mouse.x = e.clientX - rect.left;
                 mouse.y = e.clientY - rect.top;
-            });
+            };
 
-            canvas.addEventListener('mousedown', () => {
-                if(!gameRunning) return;
+            canvas.onmousedown = () => {
                 const angle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
-                bullets.push({ 
-                    x: player.x, 
-                    y: player.y, 
-                    vx: Math.cos(angle) * 12, 
-                    vy: Math.sin(angle) * 12 
-                });
-            });
+                bullets.push({ x: player.x, y: player.y, vx: Math.cos(angle)*8, vy: Math.sin(angle)*8 });
+            };
 
             setInterval(() => {
-                if(!gameRunning) return;
-                const side = Math.floor(Math.random() * 4);
-                let x, y;
-                if(side === 0) { x = Math.random() * 800; y = -30; }
-                else if(side === 1) { x = 830; y = Math.random() * 500; }
-                else if(side === 2) { x = Math.random() * 800; y = 530; }
-                else { x = -30; y = Math.random() * 500; }
-                enemies.push({ x, y, speed: 1.5 + (score/5000) });
-            }, 1200);
+                if(gameRunning) enemies.push({ x: Math.random()*800, y: Math.random()*500, speed: 1.5 });
+            }, 1500);
 
-            gameLoop();
+            requestAnimationFrame(gameLoop);
         }
 
         function gameLoop() {
             if(!gameRunning) return;
+            ctx.clearRect(0, 0, 800, 500);
 
-            // Update Player
-            if(keys['KeyW'] && player.y > 20) player.y -= player.speed;
-            if(keys['KeyS'] && player.y < 480) player.y += player.speed;
-            if(keys['KeyA'] && player.x > 20) player.x -= player.speed;
-            if(keys['KeyD'] && player.x < 780) player.x += player.speed;
+            // Movement
+            if(keys.KeyW && player.y > 0) player.y -= player.speed;
+            if(keys.KeyS && player.y < 500) player.y += player.speed;
+            if(keys.KeyA && player.x > 0) player.x -= player.speed;
+            if(keys.KeyD && player.x < 800) player.x += player.speed;
             player.angle = Math.atan2(mouse.y - player.y, mouse.x - player.x);
-
-            // Update Bullets
-            bullets.forEach((b, i) => {
-                b.x += b.vx; b.y += b.vy;
-                if(b.x < 0 || b.x > 800 || b.y < 0 || b.y > 500) bullets.splice(i, 1);
-            });
-
-            // Update Enemies
-            enemies.forEach((e, ei) => {
-                const dx = player.x - e.x;
-                const dy = player.y - e.y;
-                const dist = Math.hypot(dx, dy);
-                e.x += (dx/dist) * e.speed;
-                e.y += (dy/dist) * e.speed;
-
-                if(dist < 25) {
-                    gameRunning = false;
-                    alert("GAME OVER - Score: " + score);
-                    location.reload();
-                }
-
-                bullets.forEach((b, bi) => {
-                    if(Math.hypot(b.x - e.x, b.y - e.y) < 25) {
-                        enemies.splice(ei, 1);
-                        bullets.splice(bi, 1);
-                        score += 100;
-                        hud.innerText = `SCORE: ${score}`;
-                    }
-                });
-            });
-
-            // Draw
-            ctx.fillStyle = '#050505';
-            ctx.fillRect(0, 0, 800, 500);
 
             // Draw Player
             ctx.save();
@@ -344,29 +172,39 @@
             ctx.rotate(player.angle);
             ctx.fillStyle = '#b52f2f'; ctx.fillRect(-15, -15, 30, 30);
             ctx.fillStyle = '#e2ab86'; ctx.fillRect(-10, -10, 20, 20);
-            ctx.fillStyle = 'black'; ctx.fillRect(4, -8, 8, 4);
+            ctx.fillStyle = 'black'; ctx.fillRect(2, -8, 10, 4);
             ctx.restore();
 
-            // Draw Bullets
-            ctx.fillStyle = '#ccff00';
-            bullets.forEach(b => ctx.fillRect(b.x-3, b.y-3, 6, 6));
+            // Bullets
+            bullets.forEach((b, bi) => {
+                b.x += b.vx; b.y += b.vy;
+                ctx.fillStyle = 'yellow'; ctx.fillRect(b.x, b.y, 4, 4);
+                if(b.x < 0 || b.x > 800 || b.y < 0 || b.y > 500) bullets.splice(bi, 1);
+            });
 
-            // Draw Zombies
-            ctx.fillStyle = '#4a7c50';
-            enemies.forEach(e => {
-                ctx.fillRect(e.x-15, e.y-15, 30, 30);
-                ctx.fillStyle = '#8b0000';
-                ctx.fillRect(e.x-4, e.y-10, 8, 5);
-                ctx.fillStyle = '#4a7c50';
+            // Enemies
+            enemies.forEach((e, ei) => {
+                let dx = player.x - e.x, dy = player.y - e.y, dist = Math.sqrt(dx*dx + dy*dy);
+                e.x += (dx/dist) * e.speed; e.y += (dy/dist) * e.speed;
+                
+                ctx.fillStyle = '#4a7c50'; ctx.fillRect(e.x-15, e.y-15, 30, 30);
+                
+                bullets.forEach((b, bi) => {
+                    if(Math.hypot(b.x-e.x, b.y-e.y) < 20) {
+                        enemies.splice(ei, 1); bullets.splice(bi, 1);
+                        score += 100; document.getElementById('game-hud').innerText = "SCORE: " + score;
+                    }
+                });
+
+                if(dist < 20) {
+                    gameRunning = false;
+                    alert("NODE COMPROMISED. FINAL SCORE: " + score);
+                    location.reload();
+                }
             });
 
             requestAnimationFrame(gameLoop);
         }
-
-        // Enter key for login
-        document.getElementById('gate-input').addEventListener('keypress', (e) => {
-            if(e.key === 'Enter') checkGate();
-        });
     </script>
 </body>
 </html>
