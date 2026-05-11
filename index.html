@@ -13,245 +13,310 @@
             --neon-purple: #bc55ff;
             --neon-lime: #ccff00;
             --text-gray: #888888;
-            --border: rgba(255, 255, 255, 0.05);
+            --border: rgba(255,255,255,0.05);
         }
 
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { 
-            background: var(--bg-dark); 
-            color: white; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            height: 100vh; 
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background: var(--bg-dark);
+            color: white;
+            font-family: 'Segoe UI', sans-serif;
+            height: 100vh;
             width: 100vw;
-            overflow: hidden; 
-            display: flex; 
+            overflow: hidden;
+            display: flex;
         }
 
-        /* LOGIN SCREEN */
-        .screen { position: fixed; inset: 0; background: var(--bg-dark); z-index: 1000; display: flex; align-items: center; justify-content: center; flex-direction: column; }
-        .gate-card { width: 420px; padding: 40px; background: #0a0a0a; border: 1px solid var(--neon-purple); border-radius: 15px; text-align: center; box-shadow: 0 0 40px rgba(188, 85, 255, 0.1); }
         .hidden { display: none !important; }
 
-        /* SIDEBAR */
-        aside { 
-            width: 280px; 
-            background: var(--sidebar-bg); 
-            border-right: 1px solid var(--border); 
-            padding: 40px 25px; 
-            display: flex; 
-            flex-direction: column; 
+        /* KEYBOARD-ONLY LOGIN GATE */
+        #gate-1 {
+            position: fixed;
+            inset: 0;
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
         }
-        .sidebar-logo { width: 65px; margin-bottom: 50px; filter: drop-shadow(0 0 10px var(--neon-lime)); }
-        
-        .nav-item { 
-            display: flex; 
-            align-items: center; 
-            padding: 15px; 
-            margin-bottom: 8px; 
-            color: var(--text-gray); 
-            border-radius: 10px; 
-            cursor: pointer; 
-            transition: 0.2s; 
-            font-size: 14px;
+
+        .login-box {
+            text-align: center;
+            border: 1px solid var(--neon-purple);
+            padding: 50px;
+            border-radius: 20px;
+            background: #050505;
+            box-shadow: 0 0 50px rgba(188, 85, 255, 0.15);
         }
-        .nav-item i { margin-right: 18px; width: 22px; font-size: 18px; text-align: center; }
-        .nav-item:hover, .nav-item.active { 
-            background: rgba(188, 85, 255, 0.05); 
-            color: var(--neon-purple); 
+
+        #master-pass {
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid var(--neon-purple);
+            color: var(--neon-lime);
+            font-family: 'Courier New', monospace;
+            font-size: 24px;
+            text-align: center;
+            outline: none;
+            margin-top: 25px;
+            width: 320px;
+            letter-spacing: 5px;
+        }
+
+        /* DASHBOARD LAYOUT */
+        #main-ui { display: flex; width: 100%; height: 100vh; }
+
+        aside {
+            width: 280px;
+            background: var(--sidebar-bg);
+            border-right: 1px solid var(--border);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+            color: var(--text-gray);
+            border: none;
+            background: transparent;
+            width: 100%;
+            transition: 0.3s;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .nav-item i { margin-right: 15px; width: 20px; }
+
+        .nav-item:hover, .nav-item.active {
+            background: rgba(188, 85, 255, 0.1);
+            color: var(--neon-purple);
             border-left: 4px solid var(--neon-purple);
         }
 
-        /* MAIN CONTENT */
         main { 
-            flex-grow: 1; 
-            padding: 60px; 
-            background: radial-gradient(circle at top right, #1a082b 0%, #020202 70%);
-            display: flex;
-            flex-direction: column;
-        }
-
-        .header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 45px; }
-        .header-row h1 { font-size: 52px; font-weight: 900; letter-spacing: 6px; color: var(--neon-purple); text-transform: uppercase; }
-        
-        .user-status-card { 
-            background: #0f0f0f; 
-            border: 1px solid var(--border); 
-            padding: 18px 25px; 
-            border-radius: 15px; 
-            display: flex; 
-            align-items: center;
-        }
-        .status-hex { 
-            width: 55px; height: 55px; 
-            border: 1px solid var(--neon-lime); 
-            border-radius: 12px; 
-            display: flex; align-items: center; justify-content: center; 
-            color: var(--neon-lime); margin-right: 20px; font-size: 24px;
-            box-shadow: 0 0 20px rgba(204, 255, 0, 0.1);
-        }
-
-        /* CARD GRID */
-        .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px; margin-bottom: 60px; }
-        .hub-card { 
-            background: var(--card-bg); 
-            border: 1px solid var(--border); 
-            border-radius: 20px; 
-            padding: 40px 25px; 
-            text-align: center; 
-            transition: 0.3s;
-        }
-        .hub-card:hover { border-color: var(--neon-purple); transform: translateY(-8px); box-shadow: 0 15px 40px rgba(0,0,0,0.6); }
-        .hub-card i { font-size: 48px; margin-bottom: 25px; display: block; filter: drop-shadow(0 0 12px var(--neon-purple)); }
-        
-        .action-btn { 
-            background: transparent; 
-            border: 1px solid var(--neon-purple); 
-            color: white; 
-            padding: 14px; 
-            border-radius: 10px; 
-            width: 100%; 
-            cursor: pointer; 
-            font-size: 12px; 
-            font-weight: bold; 
-            display: flex; justify-content: space-between; align-items: center;
-            margin-top: 25px;
-        }
-
-        /* THANK YOU BANNER */
-        .thank-you-banner { 
-            background: rgba(10,10,10,0.5); 
-            border: 1px solid var(--border); 
-            border-radius: 25px; 
+            flex: 1; 
             padding: 50px; 
-            display: flex; 
-            align-items: center;
-            margin-top: auto;
-        }
-        .hex-logo-container { 
-            width: 110px; height: 110px; 
-            border: 2px solid var(--neon-lime); 
-            border-radius: 25px; 
-            display: flex; align-items: center; justify-content: center; 
-            margin-right: 55px; 
-            box-shadow: 0 0 50px rgba(204, 255, 0, 0.1);
-            background: radial-gradient(circle, rgba(204,255,0,0.05) 0%, transparent 80%);
+            overflow-y: auto; 
+            background: radial-gradient(circle at top right, #12051f 0%, #020202 100%);
         }
 
-        /* GAME STYLES */
-        #gameCanvas { background: #000; border: 3px solid var(--neon-lime); border-radius: 20px; }
+        /* ANNOUNCEMENT MODULE */
+        .msg-board { margin-top: 30px; }
+        .msg-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: flex-start;
+            transition: 0.2s;
+        }
+        .msg-card:hover { border-color: var(--neon-purple); }
+
+        .msg-tag {
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 10px;
+            font-weight: bold;
+            margin-right: 15px;
+            text-transform: uppercase;
+        }
+
+        /* GAME CANVAS */
+        #gameCanvas {
+            background: #000;
+            border: 2px solid var(--neon-lime);
+            border-radius: 15px;
+            display: block;
+            max-width: 100%;
+            box-shadow: 0 0 30px rgba(204, 255, 0, 0.05);
+        }
+
+        .btn-action {
+            background: var(--neon-lime);
+            color: black;
+            border: none;
+            padding: 15px 35px;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 25px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
     </style>
 </head>
 <body>
 
-    <div id="gate-1" class="screen">
-        <img src="logo.png" style="width:140px; margin-bottom:40px;" onerror="this.src='https://i.ibb.co/LzNfX8S/netlink-logo.png'">
-        <div class="gate-card">
-            <h2 style="letter-spacing:4px; margin-bottom:25px;">SECURE ACCESS</h2>
-            <input type="password" id="master-pass" style="width:100%; padding:18px; background:#000; border:1px solid #333; color:white; border-radius:10px; text-align:center;" placeholder="SYSTEM KEY">
-            <button onclick="unlockMaster()" style="width:100%; margin-top:25px; padding:18px; background:var(--neon-purple); border:none; color:white; font-weight:bold; border-radius:10px; cursor:pointer;">INITIALIZE NODE</button>
+    <div id="gate-1">
+        <div class="login-box">
+            <img src="https://i.ibb.co/LzNfX8S/netlink-logo.png" style="width:110px; margin-bottom:20px;">
+            <h2 style="letter-spacing:5px; font-size: 18px;">SECURE NODE LOGIN</h2>
+            <input type="password" id="master-pass" autofocus placeholder="ACCESS KEY">
+            <p style="color:var(--text-gray); margin-top:25px; font-size:11px; opacity: 0.6;">TYPE KEY & PRESS [ENTER]</p>
         </div>
     </div>
 
-    <div id="main-ui" class="hidden" style="width:100%;">
+    <div id="main-ui" class="hidden">
         <aside>
-            <img src="logo.png" class="sidebar-logo" onerror="this.src='https://i.ibb.co/LzNfX8S/netlink-logo.png'">
+            <div style="display: flex; align-items: center; margin-bottom: 40px;">
+                <img src="https://i.ibb.co/LzNfX8S/netlink-logo.png" style="width:40px; margin-right: 15px;">
+                <h2 style="font-size: 16px; color: var(--neon-lime); letter-spacing: 2px;">NETLINK v2.0</h2>
+            </div>
+            
             <nav>
-                <div class="nav-item active" onclick="showSection('founder-view')"><i class="fa-solid fa-house"></i> Founder</div>
-                <div class="nav-item"><i class="fa-solid fa-scroll"></i> Blueprint</div>
-                <div class="nav-item"><i class="fa-solid fa-list-check"></i> Assignments</div>
-                <div class="nav-item" onclick="showSection('game-view')"><i class="fa-solid fa-gamepad"></i> Prototype 1</div>
-                <div class="nav-item"><i class="fa-solid fa-users"></i> Community</div>
-                <div class="nav-item"><i class="fa-solid fa-chart-line"></i> Leaderboard</div>
-                <div class="nav-item"><i class="fa-solid fa-user"></i> Profile</div>
-                <div class="nav-item"><i class="fa-solid fa-gear"></i> Settings</div>
+                <button class="nav-item active" onclick="showSection('founder-view', this)"><i class="fa-solid fa-crown"></i> Founder</button>
+                <button class="nav-item" onclick="showSection('message-view', this)"><i class="fa-solid fa-bullhorn"></i> Announcements</button>
+                <button class="nav-item" onclick="showSection('game-view', this)"><i class="fa-solid fa-gamepad"></i> Prototype 1</button>
+                <button class="nav-item" onclick="showSection('employee-view', this)"><i class="fa-solid fa-users-gear"></i> Employee Node</button>
             </nav>
-            <div style="margin-top:auto; padding:15px; border:1px solid var(--neon-lime); color:var(--neon-lime); border-radius:10px; text-align:center; font-size:12px; font-weight:bold;">FOUNDER STATUS</div>
+
+            <div style="margin-top: auto; font-size: 10px; color: var(--text-gray); border-top: 1px solid var(--border); padding-top: 20px;">
+                NODE: <span style="color: var(--neon-lime);">MANAV_BISHT</span><br>
+                STATUS: ENCRYPTED
+            </div>
         </aside>
 
         <main>
             <section id="founder-view" class="view-section">
-                <div class="header-row">
-                    <div class="title-group">
-                        <h1>Founder</h1>
-                        <p style="color:var(--text-gray); margin-top:20px; font-size:18px;">Welcome, Founder. Build smarter, dream bigger.</p>
-                    </div>
-                    <div class="user-status-card">
-                        <div class="status-hex"><i class="fa-solid fa-crown"></i></div>
+                <h1 style="font-size: 48px; margin-bottom: 10px; letter-spacing: -1px;">Founder Terminal</h1>
+                <p style="color: var(--text-gray); font-size: 18px;">Core system access granted. Welcome back, Manav.</p>
+            </section>
+
+            <section id="message-view" class="view-section hidden">
+                <h1>Message Center</h1>
+                <div class="msg-board">
+                    <div class="msg-card">
+                        <span class="msg-tag" style="background: var(--neon-purple); color: white;">System</span>
                         <div>
-                            <div style="font-size:16px; font-weight:bold; color:var(--neon-lime);">FOUNDER</div>
-                            <div style="font-size:12px; color:var(--text-gray);">Visionary Node Connected.</div>
+                            <strong>Operational Team Provisioned</strong>
+                            <p style="color: var(--text-gray); font-size: 14px; margin-top: 5px;">Access permissions confirmed for Keshav (Co-Founder), Colton (Director), and Agastya (Employee).</p>
                         </div>
                     </div>
-                </div>
-
-                <div class="card-grid">
-                    <div class="hub-card">
-                        <i class="fa-solid fa-comment-dots" style="color:var(--neon-purple)"></i>
-                        <h3 style="margin-bottom:12px;">MESSAGE</h3>
-                        <p style="font-size:13px; color:var(--text-gray);">Secure comms with the community.</p>
-                        <button class="action-btn">MESSAGE <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                    <div class="hub-card">
-                        <i class="fa-solid fa-scroll" style="color:var(--neon-purple)"></i>
-                        <h3 style="margin-bottom:12px;">VIEW BLUEPRINT</h3>
-                        <p style="font-size:13px; color:var(--text-gray);">Explore the architectural vision.</p>
-                        <button class="action-btn">VIEW BLUEPRINT <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                    <div class="hub-card">
-                        <i class="fa-solid fa-clipboard-list" style="color:var(--neon-purple)"></i>
-                        <h3 style="margin-bottom:12px;">ASSIGNMENTS</h3>
-                        <p style="font-size:13px; color:var(--text-gray);">Manage your node tasks.</p>
-                        <button class="action-btn">ASSIGNMENTS <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                    <div class="hub-card" style="border-color:var(--neon-lime)">
-                        <i class="fa-solid fa-gamepad" style="color:var(--neon-lime)"></i>
-                        <h3 style="margin-bottom:12px;">PLAY PROTOTYPE 1</h3>
-                        <p style="font-size:13px; color:var(--text-gray);">Experience the future of game design.</p>
-                        <button class="action-btn" style="border-color:var(--neon-lime); color:var(--neon-lime);" onclick="showSection('game-view')">PLAY PROTOTYPE 1 <i class="fa-solid fa-arrow-right"></i></button>
-                    </div>
-                </div>
-
-                <div class="thank-you-banner">
-                    <div class="hex-logo-container">
-                        <i class="fa-solid fa-n" style="font-size:45px; color:var(--neon-lime);"></i>
-                    </div>
-                    <div>
-                        <h2 style="letter-spacing:3px; margin-bottom:12px;">THANK YOU, FOUNDER.</h2>
-                        <p style="color:var(--text-gray); font-size:15px; max-width:700px;">Your early support drives our innovation. Together, we build something legendary.</p>
-                        <p style="color:var(--neon-lime); font-weight:bold; margin-top:20px;">Let's build the future.</p>
+                    <div class="msg-card">
+                        <span class="msg-tag" style="background: var(--neon-lime); color: black;">Security</span>
+                        <div>
+                            <strong>Volatile Mode Enabled</strong>
+                            <p style="color: var(--text-gray); font-size: 14px; margin-top: 5px;">Memory persistence (LocalStorage) disabled. Credentials required per session.</p>
+                        </div>
                     </div>
                 </div>
             </section>
 
+            <section id="employee-view" class="view-section hidden">
+                <h1>Employee Node</h1>
+                <p style="color: var(--text-gray);">Technical task queue and operation logs.</p>
+                <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <div class="msg-card"><strong>Task 01:</strong> Canvas Optimization</div>
+                    <div class="msg-card"><strong>Task 02:</strong> Role-Based PIN Integration</div>
+                </div>
+            </section>
+
             <section id="game-view" class="view-section hidden">
-                <h1 style="color:var(--neon-lime); margin-bottom:30px;">ZOMBIE PLATFORMER</h1>
-                <canvas id="gameCanvas" width="900" height="500"></canvas>
-                <div style="margin-top:30px;">
-                    <button onclick="startEngine()" style="padding:18px 50px; background:var(--neon-lime); border:none; color:black; font-weight:bold; border-radius:12px; cursor:pointer;">BOOT ENGINE</button>
-                    <p style="margin-top:20px; color:var(--text-gray);">W/Space to Jump | Click to Shoot</p>
+                <h1 style="color: var(--neon-lime); margin-bottom: 20px;">PROTOTYPE 1: SURVIVAL</h1>
+                <canvas id="gameCanvas" width="800" height="400"></canvas>
+                <div>
+                    <button class="btn-action" onclick="bootGame()">BOOT ENGINE</button>
+                    <span style="margin-left: 25px; color: var(--text-gray); font-size: 13px; font-family: monospace;">[ SPACE ] JUMP | [ CLICK ] FIRE</span>
                 </div>
             </section>
         </main>
     </div>
 
     <script>
-        function unlockMaster() {
-            if(document.getElementById('master-pass').value === "netlink2026") {
-                document.getElementById('gate-1').classList.add('hidden');
-                document.getElementById('main-ui').classList.remove('hidden');
-            } else { alert("ACCESS DENIED"); }
-        }
+        // ENTER-KEY LOGIN LOGIC
+        const passInput = document.getElementById('master-pass');
+        passInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                if (this.value === 'netlink2026') {
+                    document.getElementById('gate-1').style.display = 'none';
+                    document.getElementById('main-ui').classList.remove('hidden');
+                } else {
+                    this.value = '';
+                    this.placeholder = "ACCESS DENIED";
+                }
+            }
+        });
 
-        function showSection(id) {
+        // NAVIGATION ENGINE
+        function showSection(id, el) {
             document.querySelectorAll('.view-section').forEach(s => s.classList.add('hidden'));
             document.getElementById(id).classList.remove('hidden');
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            if(el) el.classList.add('active');
         }
 
-        // --- PLATFORMER ENGINE LOGIC ---
-        function startEngine() {
-            const c = document.getElementById('gameCanvas');
-            const g = c.getContext('2d');
-            alert("Combat systems active. Defend the platforms.");
+        // GAME ENGINE LOGIC
+        let engineRunning = false;
+        function bootGame() {
+            if (engineRunning) return;
+            engineRunning = true;
+            const canvas = document.getElementById("gameCanvas");
+            const ctx = canvas.getContext("2d");
+
+            let player = { x: 50, y: 300, w: 30, h: 30, vy: 0, jump: false };
+            let zombies = [{ x: 800, y: 300, w: 30, h: 30 }];
+            let score = 0;
+
+            document.addEventListener("keydown", (e) => {
+                if (e.code === "Space" && !player.jump) {
+                    player.vy = -12;
+                    player.jump = true;
+                }
+            });
+
+            function loop() {
+                // Clear Canvas
+                ctx.fillStyle = "#000";
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                // Player Physics
+                player.vy += 0.6;
+                player.y += player.vy;
+                if (player.y > 300) { player.y = 300; player.jump = false; }
+
+                // Draw Player
+                ctx.fillStyle = "#bc55ff";
+                ctx.fillRect(player.x, player.y, player.w, player.h);
+
+                // Draw Ground Line
+                ctx.strokeStyle = "#333";
+                ctx.beginPath(); ctx.moveTo(0, 331); ctx.lineTo(800, 331); ctx.stroke();
+
+                // Zombie behavior
+                zombies.forEach(z => {
+                    z.x -= 3.5;
+                    if(z.x < -30) {
+                        z.x = 850 + Math.random() * 300;
+                        score++;
+                    }
+                    ctx.fillStyle = "#ccff00";
+                    ctx.fillRect(z.x, z.y, z.w, z.h);
+
+                    // Collision Logic
+                    if(player.x < z.x + z.w && player.x + player.w > z.x && player.y + player.h > z.y) {
+                        alert("NODE COMPROMISED. REBOOTING... DATA RECOVERED: " + score);
+                        location.reload(); 
+                    }
+                });
+
+                // UI Overlay
+                ctx.fillStyle = "rgba(255,255,255,0.8)";
+                ctx.font = "14px Courier New";
+                ctx.fillText("SCRAPS RECOVERED: " + score, 20, 40);
+
+                requestAnimationFrame(loop);
+            }
+            loop();
         }
     </script>
 </body>
