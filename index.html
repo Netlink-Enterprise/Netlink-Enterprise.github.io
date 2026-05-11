@@ -90,6 +90,7 @@
             padding: 18px; font-family: 'Courier New', Courier, monospace; 
             color: var(--green); margin-bottom: 30px; font-size: 15px; 
             box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+            min-height: 55px;
         }
 
         .blueprint-card { 
@@ -183,7 +184,9 @@
             if(val === "netlink2026") {
                 document.getElementById('gateway').style.display = 'none';
                 document.getElementById('hub-ui').style.display = 'flex';
-            } else { alert("ACCESS DENIED: INVALID SYSTEM KEY"); }
+            } else { 
+                alert("ACCESS DENIED: INVALID SYSTEM KEY"); 
+            }
         }
 
         // PERSONNEL LOGIC
@@ -283,7 +286,8 @@
             // Bullets
             bullets.forEach((b, bi) => {
                 b.x += b.vx; b.y += b.vy;
-                ctx.fillStyle = var(--green); ctx.fillRect(b.x-2, b.y-2, 5, 5);
+                ctx.fillStyle = '#ccff00'; // Fixed syntax error here
+                ctx.fillRect(b.x-2, b.y-2, 5, 5);
                 if(b.x < 0 || b.x > 800 || b.y < 0 || b.y > 500) bullets.splice(bi, 1);
             });
 
