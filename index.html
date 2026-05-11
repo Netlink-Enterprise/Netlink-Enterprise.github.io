@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Netlink OS | Verified Terminal</title>
+    <title>Netlink OS | Master Terminal</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -16,24 +16,24 @@
             --border: rgba(255, 255, 255, 0.05);
         }
 
-        /* RESET & VIEWPORT LOCK */
+        /* PROBLEM 1 FIX: VIEWPORT LOCK */
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { 
             background: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; 
             height: 100vh; width: 100vw; overflow: hidden; display: flex; 
         }
 
-        /* NO-POPUP AUTH SCREENS */
-        .full-screen-gate {
+        /* AUTHENTICATION OVERLAYS */
+        .auth-overlay {
             position: fixed; inset: 0; background: var(--bg-dark); z-index: 10000;
             display: flex; align-items: center; justify-content: center; flex-direction: column;
         }
         .modal-box { 
             width: 380px; padding: 40px; background: #0a0a0a; border: 1px solid var(--neon-purple); 
-            border-radius: 15px; text-align: center; box-shadow: 0 0 50px rgba(188, 85, 255, 0.1); 
+            border-radius: 15px; text-align: center; box-shadow: 0 0 40px rgba(188, 85, 255, 0.1);
         }
 
-        /* SIDEBAR (Match image_26fd38.png) */
+        /* SIDEBAR (Matches image_2697bb.png) */
         aside { 
             width: 270px; background: var(--sidebar-bg); border-right: 1px solid var(--border); 
             padding: 35px 25px; display: flex; flex-direction: column; flex-shrink: 0;
@@ -41,39 +41,53 @@
         .sidebar-logo { width: 60px; margin-bottom: 40px; filter: drop-shadow(0 0 8px var(--neon-lime)); cursor: pointer; }
         .nav-item { 
             display: flex; align-items: center; padding: 12px 18px; margin-bottom: 5px; 
-            color: var(--text-gray); border-radius: 10px; cursor: pointer; transition: 0.2s; font-size: 13px;
+            color: var(--text-gray); border-radius: 10px; cursor: pointer; font-size: 13px;
         }
         .nav-item i { margin-right: 15px; width: 20px; text-align: center; }
-        .nav-item:hover, .nav-item.active { background: rgba(188, 85, 255, 0.05); color: var(--neon-purple); border-left: 4px solid var(--neon-purple); }
+        .nav-item.active { background: rgba(188, 85, 255, 0.05); color: var(--neon-purple); border-left: 4px solid var(--neon-purple); }
 
-        /* MAIN DASHBOARD */
+        /* MAIN OS CONTAINER */
         main { 
-            flex: 1; height: 100vh; display: flex; flex-direction: column; padding: 50px; 
+            flex: 1; height: 100vh; display: flex; flex-direction: column; padding: 45px; 
             background: radial-gradient(circle at top right, #12051d 0%, #020202 65%);
-            overflow: hidden; justify-content: space-between;
+            justify-content: space-between; position: relative;
         }
-        .header-row { display: flex; justify-content: space-between; align-items: flex-start; }
+
+        /* HEADER */
+        .header-row { display: flex; justify-content: space-between; align-items: flex-start; flex-shrink: 0; }
         .header-row h1 { font-size: 52px; font-weight: 900; letter-spacing: 5px; color: var(--neon-purple); }
 
-        /* CARDS (Fixed "Down" Issue) */
-        .card-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin: 30px 0; flex-grow: 1; align-items: center; }
+        /* PROBLEM 1 FIX: AUTOMATIC CARD SCALING */
+        .card-grid { 
+            display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; 
+            flex-grow: 1; align-items: center; margin: 20px 0; 
+        }
         .hub-card { 
             background: var(--card-bg); border: 1px solid var(--border); border-radius: 20px; 
-            padding: 30px; text-align: center; transition: 0.3s; cursor: pointer; height: 100%; max-height: 280px;
-            display: flex; flex-direction: column; justify-content: center;
+            padding: 25px; text-align: center; transition: 0.3s; cursor: pointer; 
+            height: 100%; max-height: 260px; display: flex; flex-direction: column; justify-content: center;
         }
         .hub-card:hover { border-color: var(--neon-purple); transform: translateY(-5px); }
-        .hub-card i { font-size: 45px; margin-bottom: 20px; color: var(--neon-purple); }
-        .action-btn { background: transparent; border: 1px solid var(--neon-purple); color: white; padding: 10px; border-radius: 8px; width: 100%; cursor: pointer; font-size: 11px; margin-top: 15px; display: flex; justify-content: space-between; align-items: center; pointer-events: none;}
+        .hub-card i { font-size: 40px; margin-bottom: 15px; color: var(--neon-purple); pointer-events: none; }
+        
+        /* PROBLEM 2 FIX: BUTTON CLICKS */
+        .action-btn { 
+            background: transparent; border: 1px solid var(--neon-purple); color: white; padding: 10px; 
+            border-radius: 8px; width: 100%; font-size: 11px; margin-top: 15px; display: flex; 
+            justify-content: space-between; align-items: center; pointer-events: none;
+        }
 
         /* FOOTER BANNER */
-        .thank-you-banner { background: rgba(10,10,10,0.5); border: 1px solid var(--border); border-radius: 20px; padding: 30px 40px; display: flex; align-items: center; flex-shrink: 0; }
-        .hex-pedestal { width: 85px; height: 85px; border: 2px solid var(--neon-lime); border-radius: 20px; display: flex; align-items: center; justify-content: center; margin-right: 35px; }
+        .thank-you-banner { 
+            background: rgba(10,10,10,0.5); border: 1px solid var(--border); border-radius: 20px; 
+            padding: 25px 40px; display: flex; align-items: center; flex-shrink: 0; 
+        }
+        .hex-pedestal { width: 80px; height: 80px; border: 2px solid var(--neon-lime); border-radius: 18px; display: flex; align-items: center; justify-content: center; margin-right: 30px; }
 
-        /* FORMS */
+        /* INPUTS & BUTTONS */
         input { width: 100%; padding: 15px; background: #000; border: 1px solid #333; color: white; border-radius: 12px; text-align: center; margin-bottom: 15px; outline: none; }
         .btn-confirm { width: 100%; padding: 15px; background: var(--neon-purple); border: none; color: white; font-weight: bold; border-radius: 12px; cursor: pointer; }
-        .node-btn { background: #111; border: 1px solid #333; padding: 14px; border-radius: 10px; cursor: pointer; color: white; font-weight: bold; width: 100%; font-size: 12px; }
+        .node-btn { background: #111; border: 1px solid #333; padding: 14px; border-radius: 10px; cursor: pointer; color: white; font-weight: bold; width: 100%; }
         .node-btn:hover { border-color: var(--neon-lime); color: var(--neon-lime); }
 
         .hidden { display: none !important; }
@@ -81,30 +95,30 @@
 </head>
 <body>
 
-    <div id="gate-master" class="full-screen-gate">
+    <div id="gate-master" class="auth-overlay">
         <img src="logo.png" style="width:100px; margin-bottom:30px;" onerror="this.style.display='none'">
         <div class="modal-box">
             <h2 style="letter-spacing:4px; margin-bottom:20px;">SYSTEM KEY</h2>
-            <input type="password" id="master-pass" placeholder="ENTER MASTER KEY">
+            <input type="password" id="master-pass" placeholder="ENTER ACCESS KEY" onkeydown="if(event.key==='Enter') unlockMaster()">
             <button class="btn-confirm" onclick="unlockMaster()">AUTHENTICATE</button>
         </div>
     </div>
 
-    <div id="gate-node" class="full-screen-gate hidden">
+    <div id="gate-node" class="auth-overlay hidden">
         <h2 style="letter-spacing:5px; margin-bottom:35px;">SELECT OPERATOR</h2>
         <div class="modal-box" style="display:grid; grid-template-columns: 1fr 1fr; gap:12px;">
-            <button class="node-btn" onclick="openPin('Manav', 'Founder', '314359')">MANAV</button>
-            <button class="node-btn" onclick="openPin('Colton', 'Director', '444444')">COLTON</button>
+            <button class="node-btn" onclick="askPin('Manav', 'Founder', '314359')">MANAV</button>
+            <button class="node-btn" onclick="askPin('Colton', 'Director', '444444')">COLTON</button>
             <button class="node-btn" onclick="launchOS('Keshav', 'Co-Founder')">KESHAV</button>
             <button class="node-btn" onclick="launchOS('Agastya', 'Employee')">AGASTYA</button>
         </div>
     </div>
 
-    <div id="gate-pin" class="full-screen-gate hidden" style="background:rgba(0,0,0,0.98)">
+    <div id="gate-pin" class="auth-overlay hidden">
         <div class="modal-box">
             <h3 id="pin-label" style="margin-bottom:20px; color:var(--neon-lime);">VERIFY NODE</h3>
-            <input type="password" id="pin-input" placeholder="ENTER PIN">
-            <button class="btn-confirm" onclick="verifyPin()">CONFIRM</button>
+            <input type="password" id="pin-input" placeholder="ENTER PIN" onkeydown="if(event.key==='Enter') confirmPin()">
+            <button class="btn-confirm" onclick="confirmPin()">CONFIRM</button>
             <p onclick="closePin()" style="margin-top:20px; font-size:11px; color:var(--text-gray); cursor:pointer;">CANCEL</p>
         </div>
     </div>
@@ -114,14 +128,13 @@
             <img src="logo.png" class="sidebar-logo">
             <nav>
                 <div class="nav-item active"><i class="fa-solid fa-house"></i> Dashboard</div>
-                <div class="nav-item admin-only"><i class="fa-solid fa-scroll"></i> Blueprint</div>
+                <div class="nav-item node-admin"><i class="fa-solid fa-scroll"></i> Blueprint</div>
                 <div class="nav-item"><i class="fa-solid fa-list-check"></i> Assignments</div>
-                <div class="nav-item admin-only"><i class="fa-solid fa-gamepad"></i> Prototype 1</div>
+                <div class="nav-item node-admin"><i class="fa-solid fa-gamepad"></i> Prototype 1</div>
                 <div class="nav-item"><i class="fa-solid fa-users"></i> Community</div>
                 <div class="nav-item"><i class="fa-solid fa-user"></i> Profile</div>
-                <div class="nav-item"><i class="fa-solid fa-gear"></i> Settings</div>
             </nav>
-            <div id="node-tag" style="margin-top:auto; padding:15px; border:1px solid var(--neon-lime); color:var(--neon-lime); border-radius:10px; text-align:center; font-size:11px; font-weight:bold; letter-spacing:1px;">NODE: ACTIVE</div>
+            <div id="node-tag" style="margin-top:auto; padding:15px; border:1px solid var(--neon-lime); color:var(--neon-lime); border-radius:10px; text-align:center; font-size:11px; font-weight:bold;">NODE: ACTIVE</div>
         </aside>
 
         <main>
@@ -137,10 +150,10 @@
             </div>
 
             <div class="card-grid">
-                <div class="hub-card"><i class="fa-solid fa-comment"></i><h3>MESSAGE</h3><div class="action-btn">OPEN <i class="fa-solid fa-arrow-right"></i></div></div>
-                <div class="hub-card admin-only"><i class="fa-solid fa-scroll"></i><h3>BLUEPRINT</h3><div class="action-btn">VIEW <i class="fa-solid fa-arrow-right"></i></div></div>
-                <div class="hub-card"><i class="fa-solid fa-clipboard-check"></i><h3>ASSIGNMENTS</h3><div class="action-btn">TASKS <i class="fa-solid fa-arrow-right"></i></div></div>
-                <div class="hub-card admin-only" style="border-color:var(--neon-lime)"><i class="fa-solid fa-gamepad" style="color:var(--neon-lime)"></i><h3>PROTOTYPE 1</h3><div class="action-btn" style="border-color:var(--neon-lime); color:var(--neon-lime);">LAUNCH <i class="fa-solid fa-arrow-right"></i></div></div>
+                <div class="hub-card" onclick="alert('Messages System Active')"><i class="fa-solid fa-comment"></i><h3>MESSAGE</h3><div class="action-btn">OPEN <i class="fa-solid fa-arrow-right"></i></div></div>
+                <div class="hub-card node-admin" onclick="alert('Opening Blueprints')"><i class="fa-solid fa-scroll"></i><h3>BLUEPRINT</h3><div class="action-btn">VIEW <i class="fa-solid fa-arrow-right"></i></div></div>
+                <div class="hub-card" onclick="alert('Task List Loading')"><i class="fa-solid fa-clipboard-check"></i><h3>ASSIGNMENTS</h3><div class="action-btn">TASKS <i class="fa-solid fa-arrow-right"></i></div></div>
+                <div class="hub-card node-admin" onclick="alert('Launching Prototype 1')" style="border-color:var(--neon-lime)"><i class="fa-solid fa-gamepad" style="color:var(--neon-lime)"></i><h3>PROTOTYPE 1</h3><div class="action-btn" style="border-color:var(--neon-lime); color:var(--neon-lime);">LAUNCH <i class="fa-solid fa-arrow-right"></i></div></div>
             </div>
 
             <div class="thank-you-banner">
@@ -154,35 +167,29 @@
     </div>
 
     <script>
-        let session = {};
-
-        // ENTER KEY SETUP
-        window.addEventListener('keydown', (e) => {
-            if(e.key === 'Enter') {
-                if(!document.getElementById('gate-master').classList.contains('hidden')) unlockMaster();
-                else if(!document.getElementById('gate-pin').classList.contains('hidden')) verifyPin();
-            }
-        });
+        let currentSession = {};
 
         function unlockMaster() {
             if(document.getElementById('master-pass').value === "netlink2026") {
                 document.getElementById('gate-master').classList.add('hidden');
                 document.getElementById('gate-node').classList.remove('hidden');
+            } else {
+                document.getElementById('master-pass').style.borderColor = "red";
             }
         }
 
-        function openPin(name, role, pin) {
-            session = { name, role, pin };
+        function askPin(name, role, pin) {
+            currentSession = { name, role, pin };
             document.getElementById('pin-label').innerText = `VERIFY ${name.toUpperCase()}`;
             document.getElementById('gate-node').classList.add('hidden');
             document.getElementById('gate-pin').classList.remove('hidden');
             document.getElementById('pin-input').focus();
         }
 
-        function verifyPin() {
-            if(document.getElementById('pin-input').value === session.pin) {
+        function confirmPin() {
+            if(document.getElementById('pin-input').value === currentSession.pin) {
                 document.getElementById('gate-pin').classList.add('hidden');
-                launchOS(session.name, session.role);
+                launchOS(currentSession.name, currentSession.role);
             } else {
                 document.getElementById('pin-input').style.borderColor = "red";
             }
@@ -201,9 +208,9 @@
             document.getElementById('node-tag').innerText = `NODE: ${role.toUpperCase()}`;
 
             if(role === 'Co-Founder' || role === 'Employee') {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.add('hidden'));
+                document.querySelectorAll('.node-admin').forEach(el => el.classList.add('hidden'));
             } else {
-                document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+                document.querySelectorAll('.node-admin').forEach(el => el.classList.remove('hidden'));
             }
         }
     </script>
